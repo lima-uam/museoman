@@ -1,0 +1,43 @@
+[project]
+name = "museoman"
+version = "0.1.0"
+description = "Sistema de gestión de piezas del museo EPS UAM - LIMA"
+requires-python = ">=3.12"
+dependencies = [
+    "django>=5.2,<6",
+    "psycopg[binary]>=3.2",
+    "dj-database-url>=2.3",
+    "python-dotenv>=1.1",
+    "pillow>=11.2",
+    "requests>=2.32",
+    "django-htmx>=1.23",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "pytest-django>=4.10",
+    "pytest-cov>=6.1",
+    "responses>=0.25",
+    "factory-boy>=3.3",
+    "ruff>=0.11",
+]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings"
+python_files = ["test_*.py", "*_test.py"]
+addopts = "--cov=apps --cov-report=term-missing -q"
+
+[tool.ruff]
+line-length = 119
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "C4", "DJ"]
+ignore = ["DJ001"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["apps", "config"]
+
+[tool.coverage.run]
+omit = ["*/migrations/*", "*/tests/*", "manage.py", "*/settings*"]
