@@ -1,0 +1,76 @@
+{% load items_tags %}
+<div class="card">
+  <div class="card-header">Estado</div>
+  <div style="text-align:center;padding:.5rem 0 1rem">
+    <span class="badge badge-{{ item.estado }}" style="font-size:1rem;padding:.4rem 1rem">
+      {{ item.get_estado_display }}
+    </span>
+  </div>
+
+  {% if item.estado == 'libre' %}
+  <!-- Assign form -->
+  <form method="post" action="{% url 'items:assign' item.pk %}"
+        hx-post="{% url 'items:assign' item.pk %}"
+        hx-target="#state-card"
+        hx-swap="outerHTML">
+    {% csrf_token %}
+    {% if user.is_staff and users %}
+    <div class="form-group">
+      <label class="form-label">Asignar a</label>
+      <select class="form-control" name="assign_to">
+        {% for u in users %}
+        <option value="{{ u.pk }}">{{ u.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    {% endif %}
+    <button type="submit" class="btn btn-primary" style="width:100%">
+      Asignar{% if not user.is_staff %} a mí{% endif %}
+    </button>
+  </form>
+
+  {% elif can_advance or can_revert %}
+  <div style="display:flex;flex-direction:column;gap:.5rem">
+    {% if can_advance %}
+    <form method="post" action="{% url 'items:transition' item.pk %}"
+          hx-post="{% url 'items:transition' item.pk %}"
+          hx-target="#state-card"
+          hx-swap="outerHTML">
+      {% csrf_token %}
+      <input type="hidden" name="target" value="{{ next_state }}">
+      {% if next_state == 'asignado' and user.is_staff and users %}
+      <div class="form-group">
+        <label class="form-label">Asignar a</label>
+        <select class="form-control" name="assign_to">
+          {% for u in users %}
+          <option value="{{ u.pk }}">{{ u.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      {% endif %}
+      <button type="submit" class="btn btn-primary" style="width:100%">
+        Avanzar a «{{ next_state|capfirst }}»
+      </button>
+    </form>
+    {% endif %}
+
+    {% if can_revert %}
+    <form method="post" action="{% url 'items:transition' item.pk %}"
+          hx-post="{% url 'items:transition' item.pk %}"
+          hx-target="#state-card"
+          hx-swap="outerHTML">
+      {% csrf_token %}
+      <input type="hidden" name="target" value="{{ prev_state }}">
+      <button type="submit" class="btn btn-secondary" style="width:100%"
+              onclick="return confirm('¿Revertir el estado?')">
+        ← Revertir a «{{ prev_state|capfirst }}»
+      </button>
+    </form>
+    {% endif %}
+  </div>
+  {% else %}
+  <p class="text-muted text-center" style="font-size:.85rem;margin:0">
+    No tienes permiso para cambiar el estado de esta pieza.
+  </p>
+  {% endif %}
+</div>

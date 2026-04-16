@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% block title %}{{ item.identificador }} — {{ item.nombre }}{% endblock %}
+
+{% block content %}
+<div class="flex items-center gap-2 mb-2">
+  <h1 class="page-title" style="margin:0;flex:1">
+    {{ item.nombre }}
+    <span class="text-muted" style="font-weight:400;font-size:1rem"> / {{ item.identificador }}</span>
+  </h1>
+  {% if user.is_staff %}
+  <a href="{% url 'items:update' item.pk %}" class="btn btn-sm btn-secondary">Editar</a>
+  <form method="post" action="{% url 'items:deactivate' item.pk %}" style="display:inline">
+    {% csrf_token %}
+    {% if item.activo %}
+    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Desactivar esta pieza?')">Desactivar</button>
+    {% else %}
+    <button type="submit" class="btn btn-sm btn-success">Activar</button>
+    {% endif %}
+  </form>
+  {% endif %}
+</div>
+
+{% if not item.activo %}
+<div class="message message-warning">Esta pieza está inactiva.</div>
+{% endif %}
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+
+  <!-- Info card -->
+  <div class="card">
+    <div class="card-header">Información</div>
+    <table style="font-size:.9rem">
+      <tr><th style="width:38%;background:none">Estado</th><td><span class="badge badge-{{ item.estado }}">{{ item.get_estado_display }}</span></td></tr>
+      <tr><th style="background:none">Tipo</th><td>{{ item.tipo }}</td></tr>
+      <tr><th style="background:none">Vitrina</th><td>{{ item.vitrina|default:"—" }}</td></tr>
+      <tr><th style="background:none">Usuario asignado</th><td>{{ item.assigned_user.name|default:"—" }}</td></tr>
+      <tr><th style="background:none">Creado</th><td>{{ item.created_at|date:"d/m/Y H:i" }}</td></tr>
+      <tr><th style="background:none">Modificado</th><td>{{ item.updated_at|date:"d/m/Y H:i" }}</td></tr>
+    </table>
+    {% if item.observaciones %}
+    <hr class="separator">
+    <div class="card-header">Observaciones</div>
+    <p style="margin:0;font-size:.9rem;white-space:pre-line">{{ item.observaciones }}</p>
+    {% endif %}
+  </div>
+
+  <!-- State card -->
+  <div id="state-card">
+    {% include "items/partials/item_state_card.html" %}
+  </div>
+
+</div>
+
+<!-- Photos -->
+<div class="card mt-2">
+  <div class="card-header">Fotos</div>
+  {% if photos %}
+  <div class="photo-grid">
+    {% for photo in photos %}
+    <div class="photo-item">
+      <a href="{{ photo.image.url }}" target="_blank">
+        <img src="{{ photo.image.url }}" alt="Foto {{ forloop.counter }}">
+      </a>
+      {% if user.is_staff %}
+      <form method="post" action="{% url 'items:photo_delete' item.pk photo.pk %}">
+        {% csrf_token %}
+        <button class="photo-delete" title="Eliminar foto" onclick="return confirm('¿Eliminar esta foto?')">×</button>
+      </form>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="text-muted" style="margin:0">No hay fotos.</p>
+  {% endif %}
+
+  {% if user.is_staff %}
+  <hr class="separator">
+  <form method="post" action="{% url 'items:photo_upload' item.pk %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="form-inline">
+      <div class="form-group">
+        <label class="form-label">Añadir foto</label>
+        {{ photo_form.image }}
+      </div>
+      <div class="form-group" style="align-self:flex-end">
+        <button type="submit" class="btn btn-primary btn-sm">Subir</button>
+      </div>
+    </div>
+    {% if photo_form.image.errors %}
+    <div class="form-errors">{{ photo_form.image.errors.as_text }}</div>
+    {% endif %}
+  </form>
+  {% endif %}
+</div>
+
+<!-- Audit log -->
+<div class="card mt-2">
+  <div class="card-header">Historial</div>
+  {% if audit_logs %}
+  <ul class="audit-list">
+    {% for log in audit_logs %}
+    <li>
+      <span>
+        {{ log.get_action_display }}
+        {% if log.from_state and log.to_state %}
+          : {{ log.from_state }} → {{ log.to_state }}
+        {% endif %}
+        {% if log.actor %} — {{ log.actor.name }}{% endif %}
+      </span>
+      <span class="audit-meta">{{ log.created_at|date:"d/m/Y H:i" }}</span>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="text-muted" style="margin:0">Sin actividad registrada.</p>
+  {% endif %}
+</div>
+
+<div class="mt-2">
+  <a href="{% url 'items:list' %}" class="btn btn-outline btn-sm">← Volver al listado</a>
+</div>
+{% endblock %}

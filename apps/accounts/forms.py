@@ -4,6 +4,8 @@ from django.contrib.auth.forms import UserCreationForm
 
 User = get_user_model()
 
+_FC = {"class": "form-control"}
+
 
 class UserCreateForm(UserCreationForm):
     class Meta:
@@ -13,6 +15,10 @@ class UserCreateForm(UserCreationForm):
             "email": "Correo electrónico",
             "name": "Nombre",
             "is_staff": "Administrador",
+        }
+        widgets = {
+            "email": forms.EmailInput(attrs=_FC),
+            "name": forms.TextInput(attrs=_FC),
         }
 
 
@@ -25,4 +31,8 @@ class UserUpdateForm(forms.ModelForm):
             "name": "Nombre",
             "is_staff": "Administrador",
             "is_active": "Activo",
+        }
+        widgets = {
+            "email": forms.EmailInput(attrs=_FC),
+            "name": forms.TextInput(attrs=_FC),
         }

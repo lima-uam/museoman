@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Confirmar eliminación{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width:400px;margin:3rem auto">
+  <h2 style="font-size:1.1rem;margin:0 0 1rem">¿Confirmar eliminación?</h2>
+  <p>Esta acción no se puede deshacer.</p>
+  <form method="post">
+    {% csrf_token %}
+    <div class="flex gap-1">
+      <button type="submit" class="btn btn-danger">Eliminar</button>
+      <a href="javascript:history.back()" class="btn btn-secondary">Cancelar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

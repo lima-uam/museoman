@@ -1,0 +1,52 @@
+{% load items_tags %}
+<div class="card">
+  {% if page_obj.object_list %}
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Identificador</th>
+          <th>Nombre</th>
+          <th>Estado</th>
+          <th>Tipo</th>
+          <th>Vitrina</th>
+          <th>Usuario</th>
+          <th>Activo</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in page_obj %}
+        <tr>
+          <td><a href="{% url 'items:detail' item.pk %}">{{ item.identificador }}</a></td>
+          <td>{{ item.nombre }}</td>
+          <td><span class="badge badge-{{ item.estado }}">{{ item.get_estado_display }}</span></td>
+          <td>{{ item.tipo }}</td>
+          <td>{{ item.vitrina|default:"—" }}</td>
+          <td>{{ item.assigned_user.name|default:"—" }}</td>
+          <td>{% if not item.activo %}<span class="text-muted">Inactivo</span>{% else %}—{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  {% if page_obj.has_other_pages %}
+  <div style="margin-top:.75rem;display:flex;gap:.4rem;align-items:center;font-size:.85rem">
+    {% if page_obj.has_previous %}
+    <a href="?{% url_replace 'page' page_obj.previous_page_number %}" class="btn btn-sm btn-outline">← Anterior</a>
+    {% endif %}
+    <span class="text-muted">
+      Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+      ({{ page_obj.paginator.count }} piezas)
+    </span>
+    {% if page_obj.has_next %}
+    <a href="?{% url_replace 'page' page_obj.next_page_number %}" class="btn btn-sm btn-outline">Siguiente →</a>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  {% else %}
+  <p class="text-muted text-center">No se encontraron piezas con los filtros seleccionados.</p>
+  {% endif %}
+</div>

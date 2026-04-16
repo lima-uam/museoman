@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Piezas{% endblock %}
+
+{% block content %}
+<div class="flex items-center gap-2 mb-2">
+  <h1 class="page-title" style="margin:0;flex:1">Piezas del museo</h1>
+  {% if user.is_staff %}
+  <a href="{% url 'items:create' %}" class="btn btn-primary btn-sm">+ Nueva pieza</a>
+  {% endif %}
+</div>
+
+<!-- Filter form -->
+<div class="card">
+  <form method="get" id="filter-form"
+        hx-get="{% url 'items:list' %}"
+        hx-target="#item-table-container"
+        hx-push-url="true"
+        hx-trigger="change from:select, change from:input[type=hidden], submit">
+    <div class="form-inline">
+      <div class="form-group flex-1">
+        {{ form.q.label_tag }}
+        <input class="form-control" type="text" name="q" value="{{ form.q.value|default:'' }}"
+               placeholder="Nombre o identificador"
+               hx-get="{% url 'items:list' %}"
+               hx-target="#item-table-container"
+               hx-push-url="true"
+               hx-trigger="keyup changed delay:400ms">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Estado</label>
+        <select class="form-control" name="estado">
+          <option value="">Todos</option>
+          {% for val, label in form.fields.estado.choices %}
+          <option value="{{ val }}" {% if form.estado.value == val %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tipo</label>
+        <select class="form-control" name="tipo">
+          <option value="">Todos los tipos</option>
+          {% for t in form.fields.tipo.queryset %}
+          <option value="{{ t.pk }}" {% if form.tipo.value|stringformat:"s" == t.pk|stringformat:"s" %}selected{% endif %}>{{ t }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Vitrina</label>
+        <select class="form-control" name="vitrina">
+          <option value="">Todas</option>
+          {% for v in form.fields.vitrina.queryset %}
+          <option value="{{ v.pk }}" {% if form.vitrina.value|stringformat:"s" == v.pk|stringformat:"s" %}selected{% endif %}>{{ v }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Activación</label>
+        <select class="form-control" name="activo">
+          {% for val, label in form.fields.activo.choices %}
+          <option value="{{ val }}" {% if form.activo.value == val %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Ordenar</label>
+        <select class="form-control" name="sort">
+          {% for val, label in form.fields.sort.choices %}
+          <option value="{{ val }}" {% if form.sort.value == val %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group" style="align-self:flex-end">
+        <button type="submit" class="btn btn-secondary">Filtrar</button>
+        <a href="{% url 'items:list' %}" class="btn btn-outline">Limpiar</a>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div id="item-table-container">
+  {% include "items/partials/item_table.html" %}
+</div>
+{% endblock %}

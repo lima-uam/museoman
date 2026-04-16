@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Usuarios{% endblock %}
+
+{% block content %}
+<div class="flex items-center gap-2 mb-2">
+  <h1 class="page-title" style="margin:0;flex:1">Usuarios</h1>
+  <a href="{% url 'accounts:user_create' %}" class="btn btn-primary">+ Nuevo usuario</a>
+</div>
+
+<div class="card">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Correo</th>
+          <th>Rol</th>
+          <th>Activo</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in usuarios %}
+        <tr>
+          <td>{{ u.name }}</td>
+          <td>{{ u.email }}</td>
+          <td>{% if u.is_staff %}<span class="badge badge-asignado">Admin</span>{% else %}Usuario{% endif %}</td>
+          <td>{% if u.is_active %}Sí{% else %}<span class="text-muted">No</span>{% endif %}</td>
+          <td>
+            <a href="{% url 'accounts:user_update' u.pk %}" class="btn btn-sm btn-secondary">Editar</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5" class="text-muted text-center">No hay usuarios.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

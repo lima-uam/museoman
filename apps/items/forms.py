@@ -1,8 +1,21 @@
+import os
+
 from django import forms
+from django.conf import settings
 
 from apps.catalog.models import Tipo, Vitrina
 
 from .models import Item, ItemPhoto
+
+_WIDGET_ATTRS = {"class": "form-control"}
+
+
+def _add_attrs(form):
+    for field in form.fields.values():
+        w = field.widget
+        if not isinstance(w, (forms.CheckboxInput, forms.HiddenInput, forms.FileInput)):
+            w.attrs.setdefault("class", "form-control")
+    return form
 
 
 class ItemForm(forms.ModelForm):
@@ -17,7 +30,7 @@ class ItemForm(forms.ModelForm):
             "observaciones": "Observaciones",
         }
         widgets = {
-            "observaciones": forms.Textarea(attrs={"rows": 3}),
+            "observaciones": forms.Textarea(attrs={"rows": 3, **_WIDGET_ATTRS}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -26,6 +39,7 @@ class ItemForm(forms.ModelForm):
         self.fields["vitrina"].empty_label = "— Sin vitrina —"
         self.fields["tipo"].queryset = Tipo.objects.all()
         self.fields["vitrina"].queryset = Vitrina.objects.all()
+        _add_attrs(self)
 
 
 class ItemFilterForm(forms.Form):
@@ -80,12 +94,8 @@ class PhotoUploadForm(forms.ModelForm):
         labels = {"image": "Imagen"}
 
     def clean_image(self):
-        from django.conf import settings
-
         image = self.cleaned_data.get("image")
         if image:
-            import os
-
             ext = os.path.splitext(image.name)[1].lower()
             if ext not in settings.ALLOWED_IMAGE_EXTENSIONS:
                 allowed = ", ".join(settings.ALLOWED_IMAGE_EXTENSIONS)

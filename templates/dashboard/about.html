@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Sobre el proyecto{% endblock %}
+
+{% block content %}
+<div style="max-width:640px">
+  <h1 class="page-title">Sobre el proyecto</h1>
+
+  <div class="card">
+    <h2 style="font-size:1.1rem;margin:0 0 .5rem">Museoman</h2>
+    <p>
+      Sistema de gestión de documentación de piezas del museo de la
+      <strong>Escuela Politécnica Superior (EPS)</strong> de la
+      <strong>Universidad Autónoma de Madrid (UAM)</strong>.
+    </p>
+    <p>
+      Desarrollado y mantenido por el
+      <strong>Laboratorio de Informática y Matemáticas (LIMA)</strong>,
+      la asociación de estudiantes de la EPS UAM.
+    </p>
+    <hr class="separator">
+    <h3 style="font-size:.9rem;margin:0 0 .5rem;color:#6c757d">Funcionalidades</h3>
+    <ul style="margin:0;padding-left:1.2rem;font-size:.9rem;line-height:2">
+      <li>Gestión de piezas con flujo de estados: Libre → Asignado → En revisión → Documentado</li>
+      <li>Asignación de piezas a usuarios</li>
+      <li>Registro fotográfico por pieza</li>
+      <li>Historial de auditoría con notificaciones a Discord</li>
+      <li>Panel de control con estadísticas de progreso</li>
+      <li>Búsqueda y filtrado avanzado</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3 style="font-size:.9rem;margin:0 0 .5rem;color:#6c757d">Contacto</h3>
+    <p style="margin:0;font-size:.9rem">
+      EPS UAM · Laboratorio de Informática y Matemáticas (LIMA)<br>
+      C/ Francisco Tomás y Valiente, 11 — 28049 Madrid
+    </p>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Tipos{% endblock %}
+
+{% block content %}
+<div class="flex items-center gap-2 mb-2">
+  <h1 class="page-title" style="margin:0;flex:1">Tipos de pieza</h1>
+  <a href="{% url 'catalog:tipo_create' %}" class="btn btn-primary">+ Nuevo tipo</a>
+</div>
+
+<div class="card">
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Nombre</th><th>Acciones</th></tr></thead>
+      <tbody>
+        {% for tipo in tipos %}
+        <tr>
+          <td>{{ tipo.nombre }}</td>
+          <td>
+            <a href="{% url 'catalog:tipo_update' tipo.pk %}" class="btn btn-sm btn-secondary">Editar</a>
+            <a href="{% url 'catalog:tipo_delete' tipo.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="2" class="text-muted text-center">No hay tipos.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

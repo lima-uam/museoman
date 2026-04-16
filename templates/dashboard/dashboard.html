@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Panel de control{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Panel de control</h1>
+
+<!-- State counts -->
+<div class="stat-grid">
+  <div class="stat-card">
+    <div class="stat-value">{{ total_items }}</div>
+    <div class="stat-label">Total piezas activas</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value" style="color:#495057">{{ state_counts.libre }}</div>
+    <div class="stat-label">Libres</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value" style="color:#084298">{{ state_counts.asignado }}</div>
+    <div class="stat-label">Asignadas</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value" style="color:#664d03">{{ state_counts.en_revision }}</div>
+    <div class="stat-label">En revisión</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value" style="color:#0a3622">{{ state_counts.documentado }}</div>
+    <div class="stat-label">Documentadas</div>
+  </div>
+</div>
+
+<!-- Progress -->
+<div class="card">
+  <div class="card-header">Progreso de documentación</div>
+  <div class="progress">
+    <div class="progress-bar" style="width:{{ progress }}%">{{ progress }}%</div>
+  </div>
+  <p class="text-muted mt-1" style="font-size:.82rem;margin-bottom:0">
+    {{ state_counts.documentado }} de {{ total_items }} piezas documentadas
+  </p>
+</div>
+
+<!-- Per-user stats -->
+{% if users_items %}
+<div class="card">
+  <div class="card-header">Piezas por usuario</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Usuario</th>
+          <th>Total asignadas</th>
+          <th>Documentadas</th>
+          <th>Progreso</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in users_items %}
+        <tr>
+          <td>{{ u.name }}</td>
+          <td>{{ u.total }}</td>
+          <td>{{ u.documentados }}</td>
+          <td>
+            {% if u.total %}
+            <div class="progress" style="height:10px;min-width:80px">
+              <div class="progress-bar" style="width:{% widthratio u.documentados u.total 100 %}%"></div>
+            </div>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
