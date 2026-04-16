@@ -20,8 +20,8 @@ class Command(BaseCommand):
 
         # Vitrinas
         vitrinas = []
-        for n in range(1, 4):
-            v, _ = Vitrina.objects.get_or_create(numero=n)
+        for nombre in ["Sala A", "Sala B", "Sala C"]:
+            v, _ = Vitrina.objects.get_or_create(nombre=nombre)
             vitrinas.append(v)
         self.stdout.write(f"Vitrinas: {len(vitrinas)}")
 

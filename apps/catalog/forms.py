@@ -13,5 +13,6 @@ class TipoForm(forms.ModelForm):
 class VitrinaForm(forms.ModelForm):
     class Meta:
         model = Vitrina
-        fields = ["numero"]
-        labels = {"numero": "Número"}
+        fields = ["nombre"]
+        labels = {"nombre": "Nombre"}
+        widgets = {"nombre": forms.TextInput(attrs={"class": "form-control"})}

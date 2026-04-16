@@ -23,7 +23,7 @@ def tipo(db):
 @pytest.fixture
 def vitrina(db):
     from apps.catalog.models import Vitrina
-    return Vitrina.objects.create(numero=1)
+    return Vitrina.objects.create(nombre="Vitrina de prueba")
 
 
 @pytest.fixture

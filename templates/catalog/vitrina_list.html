@@ -10,13 +10,14 @@
 <div class="card">
   <div class="table-wrap">
     <table>
-      <thead><tr><th>Número</th><th>Acciones</th></tr></thead>
+      <thead><tr><th>Nº</th><th>Nombre</th><th>Acciones</th></tr></thead>
       <tbody>
         {% for vitrina in vitrinas %}
         <tr>
-          <td>Vitrina {{ vitrina.numero }}</td>
+          <td>{{ vitrina.numero }}</td>
+          <td>{{ vitrina.nombre|default:"—" }}</td>
           <td>
-            <a href="{% url 'catalog:vitrina_update' vitrina.pk %}" class="btn btn-sm btn-secondary">Editar</a>
+              <a href="{% url 'catalog:vitrina_update' vitrina.pk %}" class="btn btn-sm btn-secondary">Editar</a>
             <a href="{% url 'catalog:vitrina_delete' vitrina.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
           </td>
         </tr>
