@@ -1,0 +1,96 @@
+from django import forms
+
+from apps.catalog.models import Tipo, Vitrina
+
+from .models import Item, ItemPhoto
+
+
+class ItemForm(forms.ModelForm):
+    class Meta:
+        model = Item
+        fields = ["nombre", "identificador", "tipo", "vitrina", "observaciones"]
+        labels = {
+            "nombre": "Nombre",
+            "identificador": "Identificador",
+            "tipo": "Tipo",
+            "vitrina": "Vitrina",
+            "observaciones": "Observaciones",
+        }
+        widgets = {
+            "observaciones": forms.Textarea(attrs={"rows": 3}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["vitrina"].required = False
+        self.fields["vitrina"].empty_label = "— Sin vitrina —"
+        self.fields["tipo"].queryset = Tipo.objects.all()
+        self.fields["vitrina"].queryset = Vitrina.objects.all()
+
+
+class ItemFilterForm(forms.Form):
+    q = forms.CharField(
+        required=False,
+        label="Buscar",
+        widget=forms.TextInput(attrs={"placeholder": "Nombre o identificador"}),
+    )
+    estado = forms.ChoiceField(required=False, label="Estado", choices=[])
+    assigned_user = forms.IntegerField(
+        required=False, label="Usuario asignado", widget=forms.HiddenInput
+    )
+    tipo = forms.ModelChoiceField(
+        required=False, queryset=Tipo.objects.all(), label="Tipo", empty_label="Todos los tipos"
+    )
+    vitrina = forms.ModelChoiceField(
+        required=False,
+        queryset=Vitrina.objects.all(),
+        label="Vitrina",
+        empty_label="Todas las vitrinas",
+    )
+    activo = forms.ChoiceField(
+        required=False,
+        label="Estado de activación",
+        choices=[("1", "Solo activos"), ("0", "Solo inactivos"), ("", "Todos")],
+        initial="1",
+    )
+    sort = forms.ChoiceField(
+        required=False,
+        choices=[
+            ("", "Por defecto"),
+            ("nombre", "Nombre A-Z"),
+            ("-nombre", "Nombre Z-A"),
+            ("estado", "Estado"),
+            ("identificador", "Identificador"),
+            ("-created_at", "Más recientes"),
+            ("created_at", "Más antiguos"),
+        ],
+    )
+
+    def __init__(self, *args, **kwargs):
+        from apps.items.state import State
+
+        super().__init__(*args, **kwargs)
+        self.fields["estado"].choices = [("", "Todos los estados")] + list(State.choices)
+
+
+class PhotoUploadForm(forms.ModelForm):
+    class Meta:
+        model = ItemPhoto
+        fields = ["image"]
+        labels = {"image": "Imagen"}
+
+    def clean_image(self):
+        from django.conf import settings
+
+        image = self.cleaned_data.get("image")
+        if image:
+            import os
+
+            ext = os.path.splitext(image.name)[1].lower()
+            if ext not in settings.ALLOWED_IMAGE_EXTENSIONS:
+                allowed = ", ".join(settings.ALLOWED_IMAGE_EXTENSIONS)
+                raise forms.ValidationError(f"Formato no permitido. Usa: {allowed}")
+            if image.size > settings.MAX_UPLOAD_SIZE:
+                max_mb = settings.MAX_UPLOAD_SIZE // 1024 // 1024
+                raise forms.ValidationError(f"El archivo excede el tamaño máximo de {max_mb} MB.")
+        return image

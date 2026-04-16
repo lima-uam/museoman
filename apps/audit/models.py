@@ -1,0 +1,48 @@
+from django.conf import settings
+from django.db import models
+
+
+class AuditLog(models.Model):
+    ACTION_STATE_CHANGE = "state_change"
+    ACTION_ASSIGNED = "assigned"
+    ACTION_DEACTIVATED = "deactivated"
+    ACTION_ACTIVATED = "activated"
+    ACTION_PHOTO_ADDED = "photo_added"
+    ACTION_PHOTO_DELETED = "photo_deleted"
+
+    ACTION_CHOICES = [
+        (ACTION_STATE_CHANGE, "Cambio de estado"),
+        (ACTION_ASSIGNED, "Asignación"),
+        (ACTION_DEACTIVATED, "Desactivación"),
+        (ACTION_ACTIVATED, "Activación"),
+        (ACTION_PHOTO_ADDED, "Foto añadida"),
+        (ACTION_PHOTO_DELETED, "Foto eliminada"),
+    ]
+
+    item = models.ForeignKey(
+        "items.Item",
+        on_delete=models.CASCADE,
+        related_name="audit_logs",
+        verbose_name="pieza",
+    )
+    actor = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="audit_logs",
+        verbose_name="usuario",
+    )
+    action = models.CharField(max_length=30, choices=ACTION_CHOICES, verbose_name="acción")
+    from_state = models.CharField(max_length=30, blank=True, verbose_name="estado anterior")
+    to_state = models.CharField(max_length=30, blank=True, verbose_name="estado nuevo")
+    payload = models.JSONField(default=dict, blank=True, verbose_name="datos")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="fecha")
+
+    class Meta:
+        verbose_name = "registro de auditoría"
+        verbose_name_plural = "registros de auditoría"
+        ordering = ["-created_at"]
+        indexes = [models.Index(fields=["item", "-created_at"])]
+
+    def __str__(self):
+        return f"{self.get_action_display()} — {self.item} — {self.created_at:%Y-%m-%d %H:%M}"
