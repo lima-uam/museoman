@@ -196,6 +196,18 @@ class ItemAssignView(LoginRequiredMixin, View):
         except (TransitionError, ValueError) as e:
             messages.error(request, str(e))
 
+        if request.htmx:
+            _next = FORWARD.get(item.estado, "")
+            ctx = {
+                "item": item,
+                "State": State,
+                "can_advance": can_transition(item, _next, request.user) if item.estado in FORWARD else False,
+                "can_revert": can_revert(item, request.user),
+                "next_state": FORWARD.get(item.estado),
+                "prev_state": BACKWARD.get(item.estado),
+                "users": User.objects.filter(is_active=True).order_by("name") if request.user.is_staff else None,
+            }
+            return render(request, "items/partials/item_state_card.html", ctx)
         return redirect("items:detail", pk=pk)
 
 
