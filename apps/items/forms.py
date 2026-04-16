@@ -21,10 +21,9 @@ def _add_attrs(form):
 class ItemForm(forms.ModelForm):
     class Meta:
         model = Item
-        fields = ["nombre", "identificador", "tipo", "vitrina", "observaciones"]
+        fields = ["nombre", "tipo", "vitrina", "observaciones"]
         labels = {
             "nombre": "Nombre",
-            "identificador": "Identificador",
             "tipo": "Tipo",
             "vitrina": "Vitrina",
             "observaciones": "Observaciones",

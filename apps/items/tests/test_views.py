@@ -40,26 +40,31 @@ class TestItemListView:
         assert item.nombre in resp.content.decode()
 
     def test_hides_inactive_items_by_default(self, client_admin, item):
+        item.refresh_from_db()
         item.activo = False
         item.save()
         resp = client_admin.get(reverse("items:list") + "?activo=1")
         assert item.identificador not in resp.content.decode()
 
     def test_shows_inactive_with_filter(self, client_admin, item):
+        item.refresh_from_db()
         item.activo = False
         item.save()
         resp = client_admin.get(reverse("items:list") + "?activo=0")
         assert item.identificador in resp.content.decode()
 
     def test_text_search_nombre(self, client_admin, item):
+        item.refresh_from_db()
         resp = client_admin.get(reverse("items:list") + f"?q={item.nombre[:5]}&activo=")
         assert item.identificador in resp.content.decode()
 
     def test_text_search_identificador(self, client_admin, item):
+        item.refresh_from_db()
         resp = client_admin.get(reverse("items:list") + f"?q={item.identificador}&activo=")
         assert item.nombre in resp.content.decode()
 
     def test_filter_by_estado(self, client_admin, item):
+        item.refresh_from_db()
         resp = client_admin.get(reverse("items:list") + "?estado=libre&activo=1")
         assert item.identificador in resp.content.decode()
         resp2 = client_admin.get(reverse("items:list") + "?estado=documentado&activo=1")
@@ -67,7 +72,7 @@ class TestItemListView:
 
     def test_pagination(self, client_admin, tipo, admin_user):
         for i in range(25):
-            Item.all_objects.create(nombre=f"Item {i}", identificador=f"ID-{i:03d}", tipo=tipo, created_by=admin_user)
+            Item.all_objects.create(nombre=f"Item {i}", tipo=tipo, created_by=admin_user)
         resp = client_admin.get(reverse("items:list") + "?activo=1")
         assert resp.status_code == 200
 
@@ -80,6 +85,7 @@ class TestItemDetailView:
         assert resp.status_code == 302
 
     def test_shows_item_details(self, client_admin, item):
+        item.refresh_from_db()
         resp = client_admin.get(reverse("items:detail", kwargs={"pk": item.pk}))
         assert resp.status_code == 200
         assert item.nombre in resp.content.decode()
@@ -95,17 +101,17 @@ class TestItemDetailView:
 @pytest.mark.django_db
 class TestItemCreateView:
     def test_requires_admin(self, client_user, tipo):
-        resp = client_user.post(reverse("items:create"), {
-            "nombre": "Test", "identificador": "T-001", "tipo": tipo.pk
-        })
+        resp = client_user.post(reverse("items:create"), {"nombre": "Test", "tipo": tipo.pk})
         assert resp.status_code == 403
 
     def test_admin_can_create(self, client_admin, tipo):
         resp = client_admin.post(reverse("items:create"), {
-            "nombre": "Nueva pieza", "identificador": "NP-001", "tipo": tipo.pk, "observaciones": ""
+            "nombre": "Nueva pieza", "tipo": tipo.pk, "observaciones": ""
         })
         assert resp.status_code == 302
-        assert Item.all_objects.filter(identificador="NP-001").exists()
+        obj = Item.all_objects.filter(nombre="Nueva pieza").first()
+        assert obj is not None
+        assert obj.identificador.startswith("PIEZA-")
 
 
 @pytest.mark.django_db

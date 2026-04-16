@@ -2,6 +2,7 @@ import os
 
 from django.conf import settings
 from django.db import models
+from django.db.models.signals import post_save
 from django.utils.functional import cached_property
 
 from .state import State
@@ -18,7 +19,9 @@ class AllItemManager(models.Manager):
 
 class Item(models.Model):
     nombre = models.CharField(max_length=200, verbose_name="nombre")
-    identificador = models.CharField(max_length=100, unique=True, db_index=True, verbose_name="identificador")
+    identificador = models.CharField(
+        max_length=100, unique=True, db_index=True, blank=True, null=True, verbose_name="identificador"
+    )
     estado = models.CharField(
         max_length=20,
         choices=State.choices,
@@ -114,3 +117,14 @@ class ItemPhoto(models.Model):
         super().delete(*args, **kwargs)
         if path and os.path.exists(path):
             os.remove(path)
+
+
+def _auto_identificador(sender, instance, created, **kwargs):
+    """Assign identificador = PIEZA-{pk:04d} after first insert if left blank."""
+    if created and not instance.identificador:
+        new_id = f"PIEZA-{instance.pk:04d}"
+        Item.all_objects.filter(pk=instance.pk).update(identificador=new_id)
+        instance.identificador = new_id
+
+
+post_save.connect(_auto_identificador, sender=Item)

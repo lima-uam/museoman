@@ -31,7 +31,6 @@ def item(db, tipo, admin_user):
     from apps.items.models import Item
     return Item.all_objects.create(
         nombre="IBM PC XT",
-        identificador="PC-001",
         tipo=tipo,
         created_by=admin_user,
     )
