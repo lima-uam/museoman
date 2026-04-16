@@ -50,6 +50,7 @@ body {
 
 .navbar-links {
   display: flex;
+  align-items: center;
   gap: 1rem;
   flex: 1;
 }
@@ -239,10 +240,40 @@ tr:hover td { background: #f1f3f5; }
 /* ── Login ── */
 .login-wrap { max-width: 360px; margin: 5rem auto; }
 
-/* ── Responsive tweak ── */
-@media (max-width: 600px) {
-  .form-inline { flex-direction: column; }
-  .navbar-links { display: none; }
+/* ── Responsive tweaks ── */
+@media (max-width: 700px) {
+  /* Navbar: brand + user on first row, links scroll horizontally on second row */
+  .navbar {
+    flex-wrap: wrap;
+    gap: .4rem;
+    padding: .5rem 1rem;
+  }
+  .navbar-brand { flex: 1; }
+  .navbar-user  { margin-left: 0; }
+  .navbar-links {
+    order: 3;
+    flex: none;
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+    border-top: 1px solid var(--clr-border);
+    padding-top: .4rem;
+    /* hide scrollbar visually but keep it functional */
+    scrollbar-width: none;
+    gap: .5rem;
+  }
+  .navbar-links::-webkit-scrollbar { display: none; }
+  .navbar-links a { flex-shrink: 0; }
+
+  /* Filter form: stack vertically, full width, left-aligned */
+  .form-inline {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .form-inline .form-group { width: 100%; }
+  .form-inline .form-group .form-control,
+  .form-inline .form-group select,
+  .form-inline .form-group input { width: 100%; }
 }
 
 /* ── HTMX loading indicator ── */

@@ -36,9 +36,6 @@
        {% if request.resolver_match.app_name == 'catalog' and 'vitrina' in request.path %}class="active"{% endif %}>
       Vitrinas
     </a>
-    <a href="{% url 'items:create' %}">
-      + Nueva pieza
-    </a>
     {% endif %}
     <a href="{% url 'about' %}">Sobre el proyecto</a>
   </div>
