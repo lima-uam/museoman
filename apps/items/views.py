@@ -157,8 +157,10 @@ class ItemTransitionView(LoginRequiredMixin, View):
         if assign_to_id:
             assign_to = get_object_or_404(User, pk=assign_to_id)
 
+        url = request.POST.get("url", "").strip()
+
         try:
-            apply_transition(item, target, request.user, assign_to=assign_to)
+            apply_transition(item, target, request.user, assign_to=assign_to, url=url)
             messages.success(request, f"Estado actualizado a «{State(target).label}».")
         except (TransitionError, ValueError) as e:
             messages.error(request, str(e))

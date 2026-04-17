@@ -127,7 +127,7 @@ class TestItemTransitionView:
 
     def test_admin_can_mark_documentado(self, client_admin, admin_user, regular_user, item):
         apply_transition(item, State.ASIGNADO, regular_user, assign_to=regular_user)
-        apply_transition(item, State.EN_REVISION, regular_user)
+        apply_transition(item, State.EN_REVISION, regular_user, url="https://example.com")
         resp = client_admin.post(
             reverse("items:transition", kwargs={"pk": item.pk}),
             {"target": State.DOCUMENTADO},
@@ -135,6 +135,28 @@ class TestItemTransitionView:
         assert resp.status_code == 302
         item.refresh_from_db()
         assert item.estado == State.DOCUMENTADO
+
+    def test_transition_to_en_revision_without_url_fails(self, client_user, regular_user, item):
+        apply_transition(item, State.ASIGNADO, regular_user, assign_to=regular_user)
+        resp = client_user.post(
+            reverse("items:transition", kwargs={"pk": item.pk}),
+            {"target": State.EN_REVISION},
+            follow=True,
+        )
+        assert resp.status_code == 200
+        item.refresh_from_db()
+        assert item.estado == State.ASIGNADO  # not advanced
+
+    def test_transition_to_en_revision_sets_url(self, client_user, regular_user, item):
+        apply_transition(item, State.ASIGNADO, regular_user, assign_to=regular_user)
+        resp = client_user.post(
+            reverse("items:transition", kwargs={"pk": item.pk}),
+            {"target": State.EN_REVISION, "url": "https://example.com/pieza"},
+        )
+        assert resp.status_code == 302
+        item.refresh_from_db()
+        assert item.estado == State.EN_REVISION
+        assert item.url == "https://example.com/pieza"
 
 
 @pytest.mark.django_db

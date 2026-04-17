@@ -61,12 +61,16 @@ def _check_permission(current: str, target: str, item, user) -> bool:
     return False
 
 
-def apply_transition(item, target: str, actor, assign_to=None):
+def apply_transition(item, target: str, actor, assign_to=None, url: str = ""):
     """
     Apply a state transition atomically.
 
     For libre → asignado, assign_to specifies the user to assign.
     If assign_to is None and actor is not admin, assigns to actor.
+
+    For asignado → en_revision, url may be provided to set item.url
+    as part of the transition. If url is not provided and item.url is
+    blank, raises TransitionError.
     """
     from django.db import transaction
 
@@ -83,6 +87,15 @@ def apply_transition(item, target: str, actor, assign_to=None):
             )
 
         old_state = locked.estado
+
+        if target == State.EN_REVISION:
+            effective_url = url or locked.url
+            if not effective_url:
+                raise TransitionError(
+                    "Debes establecer la URL antes de pasar a revisión."
+                )
+            locked.url = effective_url
+
         locked.estado = target
 
         if target == State.ASIGNADO:
@@ -94,7 +107,8 @@ def apply_transition(item, target: str, actor, assign_to=None):
         if target == State.LIBRE:
             locked.assigned_user = None
 
-        locked.save(update_fields=["estado", "assigned_user", "updated_at"])
+        update_fields = ["estado", "assigned_user", "url", "updated_at"]
+        locked.save(update_fields=update_fields)
 
         record(
             AuditLog.ACTION_STATE_CHANGE,

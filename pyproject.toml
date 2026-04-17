@@ -27,6 +27,9 @@ dev = [
 DJANGO_SETTINGS_MODULE = "config.test_settings"
 python_files = ["test_*.py", "*_test.py"]
 addopts = "--cov=apps --cov-report=term-missing -q"
+filterwarnings = [
+    "ignore::django.utils.deprecation.RemovedInDjango60Warning",
+]
 
 [tool.ruff]
 line-length = 119

@@ -10,6 +10,8 @@ from apps.items.state import (
     can_transition,
 )
 
+TEST_URL = "https://example.com/pieza"
+
 
 @pytest.mark.django_db
 class TestStateMachine:
@@ -22,10 +24,8 @@ class TestStateMachine:
         assert can_transition(item, State.ASIGNADO, regular_user)
 
     def test_only_assigned_user_can_advance_to_en_revision(self, item, regular_user, admin_user):
-        # Assign first
         apply_transition(item, State.ASIGNADO, regular_user, assign_to=regular_user)
         assert can_transition(item, State.EN_REVISION, regular_user)
-        # Other regular user cannot
         from django.contrib.auth import get_user_model
         User = get_user_model()
         other = User.objects.create_user(email="other@test.com", name="Other", password="pass")
@@ -37,13 +37,13 @@ class TestStateMachine:
 
     def test_only_admin_can_mark_documentado(self, item, regular_user, admin_user):
         apply_transition(item, State.ASIGNADO, regular_user, assign_to=regular_user)
-        apply_transition(item, State.EN_REVISION, regular_user)
+        apply_transition(item, State.EN_REVISION, regular_user, url=TEST_URL)
         assert not can_transition(item, State.DOCUMENTADO, regular_user)
         assert can_transition(item, State.DOCUMENTADO, admin_user)
 
     def test_documentado_has_no_forward(self, item, regular_user, admin_user):
         apply_transition(item, State.ASIGNADO, regular_user, assign_to=regular_user)
-        apply_transition(item, State.EN_REVISION, regular_user)
+        apply_transition(item, State.EN_REVISION, regular_user, url=TEST_URL)
         apply_transition(item, State.DOCUMENTADO, admin_user)
         assert item.estado == State.DOCUMENTADO
         assert State.DOCUMENTADO not in FORWARD
@@ -91,3 +91,25 @@ class TestStateMachine:
         item.refresh_from_db()
         assert item.assigned_user is None
         assert item.estado == State.LIBRE
+
+    # ── URL enforcement ──────────────────────────────────────────────────
+
+    def test_en_revision_requires_url(self, item, regular_user):
+        apply_transition(item, State.ASIGNADO, regular_user, assign_to=regular_user)
+        with pytest.raises(TransitionError, match="URL"):
+            apply_transition(item, State.EN_REVISION, regular_user)
+
+    def test_en_revision_with_existing_url_succeeds(self, item, regular_user):
+        item.url = TEST_URL
+        item.save(update_fields=["url"])
+        apply_transition(item, State.ASIGNADO, regular_user, assign_to=regular_user)
+        apply_transition(item, State.EN_REVISION, regular_user)
+        item.refresh_from_db()
+        assert item.estado == State.EN_REVISION
+
+    def test_en_revision_url_set_inline(self, item, regular_user):
+        apply_transition(item, State.ASIGNADO, regular_user, assign_to=regular_user)
+        apply_transition(item, State.EN_REVISION, regular_user, url=TEST_URL)
+        item.refresh_from_db()
+        assert item.estado == State.EN_REVISION
+        assert item.url == TEST_URL
