@@ -11,5 +11,4 @@ class TipoAdmin(admin.ModelAdmin):
 
 @admin.register(Vitrina)
 class VitrinaAdmin(admin.ModelAdmin):
-    list_display = ["numero", "created_at"]
-    ordering = ["numero"]
+    list_display = ["nombre", "url", "created_at"]
