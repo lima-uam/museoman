@@ -29,7 +29,21 @@ class TestAboutView:
     def test_accessible_without_login(self):
         c = Client()
         resp = c.get(reverse("about"))
-        # Actually LoginRequired is not applied to about — check spec:
-        # spec says "Restricted to authenticated users" globally
-        # We skip login on about — check if it redirects or loads
-        assert resp.status_code in [200, 302]
+        assert resp.status_code == 200
+
+    def test_shows_stats(self, item):
+        c = Client()
+        resp = c.get(reverse("about"))
+        assert resp.status_code == 200
+        assert b"Total piezas activas" in resp.content
+
+    def test_contains_discord_iframe(self):
+        c = Client()
+        resp = c.get(reverse("about"))
+        assert b"discord.com/widget" in resp.content
+
+    def test_contains_project_info(self):
+        c = Client()
+        resp = c.get(reverse("about"))
+        assert b"Museoman" in resp.content
+        assert b"LIMA" in resp.content

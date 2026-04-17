@@ -2,13 +2,20 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
+from django.shortcuts import redirect
 from django.urls import include, path
-from django.views.generic import RedirectView
 
 from apps.accounts.forms import PasswordChangeFormStyled
 
+
+def root_redirect(request):
+    if request.user.is_authenticated:
+        return redirect("/dashboard/")
+    return redirect("/about/")
+
+
 urlpatterns = [
-    path("", RedirectView.as_view(url="/dashboard/", permanent=False)),
+    path("", root_redirect),
     path("admin/", admin.site.urls),
     path("login/", auth_views.LoginView.as_view(template_name="accounts/login.html"), name="login"),
     path("logout/", auth_views.LogoutView.as_view(), name="logout"),
