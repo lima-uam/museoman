@@ -3,6 +3,8 @@ import os
 from django import forms
 from django.conf import settings
 
+from django.contrib.auth import get_user_model
+
 from apps.catalog.models import Tipo, Vitrina
 
 from .models import Item, ItemPhoto
@@ -51,8 +53,12 @@ class ItemFilterForm(forms.Form):
         widget=forms.TextInput(attrs={"placeholder": "Buscar por nombre…"}),
     )
     estado = forms.ChoiceField(required=False, label="Estado", choices=[])
-    assigned_user = forms.IntegerField(
-        required=False, label="Usuario asignado", widget=forms.HiddenInput
+    assigned_user = forms.ModelChoiceField(
+        required=False,
+        label="Asignado a",
+        queryset=None,
+        empty_label="Todos los usuarios",
+        widget=forms.Select(attrs={"class": "form-control"}),
     )
     tipo = forms.ModelMultipleChoiceField(
         required=False,
@@ -89,6 +95,8 @@ class ItemFilterForm(forms.Form):
 
         super().__init__(*args, **kwargs)
         self.fields["estado"].choices = [("", "Todos los estados")] + list(State.choices)
+        User = get_user_model()
+        self.fields["assigned_user"].queryset = User.objects.filter(is_active=True).order_by("name")
 
 
 class PhotoUploadForm(forms.ModelForm):

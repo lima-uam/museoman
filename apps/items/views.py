@@ -41,7 +41,7 @@ class ItemListView(LoginRequiredMixin, View):
             if estado:
                 qs = qs.filter(estado=estado)
             if assigned_user_id:
-                qs = qs.filter(assigned_user_id=assigned_user_id)
+                qs = qs.filter(assigned_user=assigned_user_id)
             if tipo:
                 for t in tipo:
                     qs = qs.filter(tipos=t)

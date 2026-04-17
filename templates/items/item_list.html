@@ -37,6 +37,15 @@
         </select>
       </div>
       <div class="form-group">
+        <label class="form-label">Asignado a</label>
+        <select class="form-control" name="assigned_user">
+          <option value="">Todos los usuarios</option>
+          {% for u in form.fields.assigned_user.queryset %}
+          <option value="{{ u.pk }}" {% if form.assigned_user.value|stringformat:"s" == u.pk|stringformat:"s" %}selected{% endif %}>{{ u.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
         <label class="form-label">Tipos</label>
         <select class="form-control" name="tipo" id="id_filter_tipo" multiple>
           {% for t in form.fields.tipo.queryset %}
