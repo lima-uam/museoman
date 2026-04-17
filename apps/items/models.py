@@ -33,11 +33,11 @@ class Item(models.Model):
         verbose_name="usuario asignado",
     )
     observaciones = models.TextField(blank=True, verbose_name="observaciones")
-    tipo = models.ForeignKey(
+    tipos = models.ManyToManyField(
         "catalog.Tipo",
-        on_delete=models.PROTECT,
+        blank=True,
         related_name="items",
-        verbose_name="tipo",
+        verbose_name="tipos",
     )
     vitrina = models.ForeignKey(
         "catalog.Vitrina",
@@ -70,7 +70,6 @@ class Item(models.Model):
         indexes = [
             models.Index(fields=["estado"]),
             models.Index(fields=["assigned_user"]),
-            models.Index(fields=["tipo"]),
             models.Index(fields=["vitrina"]),
             models.Index(fields=["activo"]),
         ]

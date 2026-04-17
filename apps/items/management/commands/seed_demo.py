@@ -54,10 +54,11 @@ class Command(BaseCommand):
             ("Commodore 64", tipos[0], vitrinas[2]),
         ]
         for nombre, tipo, vitrina in demo_items:
-            Item.all_objects.get_or_create(
+            item, _ = Item.all_objects.get_or_create(
                 nombre=nombre,
-                defaults={"tipo": tipo, "vitrina": vitrina, "created_by": admin},
+                defaults={"vitrina": vitrina, "created_by": admin},
             )
+            item.tipos.add(tipo)
         self.stdout.write(f"Piezas: {len(demo_items)}")
 
         self.stdout.write(self.style.SUCCESS("Datos de demostración cargados correctamente."))

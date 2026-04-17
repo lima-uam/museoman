@@ -61,9 +61,28 @@ class TestItemListView:
         resp2 = client_admin.get(reverse("items:list") + "?estado=documentado&activo=1")
         assert item.nombre not in resp2.content.decode()
 
-    def test_pagination(self, client_admin, tipo, admin_user):
+    def test_filter_by_tipo(self, client_admin, item, tipo, admin_user):
+        from apps.catalog.models import Tipo
+        other_tipo = Tipo.objects.create(nombre="Monitor")
+        other_item = Item.all_objects.create(nombre="Monitor VGA", created_by=admin_user)
+        other_item.tipos.add(other_tipo)
+        # filter by item's tipo — only item shows
+        resp = client_admin.get(reverse("items:list") + f"?tipo={tipo.pk}&activo=1")
+        assert item.nombre in resp.content.decode()
+        assert other_item.nombre not in resp.content.decode()
+
+    def test_item_can_have_multiple_tipos(self, admin_user):
+        from apps.catalog.models import Tipo
+        t1 = Tipo.objects.create(nombre="Tipo A")
+        t2 = Tipo.objects.create(nombre="Tipo B")
+        obj = Item.all_objects.create(nombre="Multi", created_by=admin_user)
+        obj.tipos.set([t1, t2])
+        obj.refresh_from_db()
+        assert obj.tipos.count() == 2
+
+    def test_pagination(self, client_admin, admin_user):
         for i in range(25):
-            Item.all_objects.create(nombre=f"Item {i}", tipo=tipo, created_by=admin_user)
+            Item.all_objects.create(nombre=f"Item {i}", created_by=admin_user)
         resp = client_admin.get(reverse("items:list") + "?activo=1")
         assert resp.status_code == 200
 
@@ -90,13 +109,13 @@ class TestItemDetailView:
 
 @pytest.mark.django_db
 class TestItemCreateView:
-    def test_requires_admin(self, client_user, tipo):
-        resp = client_user.post(reverse("items:create"), {"nombre": "Test", "tipo": tipo.pk})
+    def test_requires_admin(self, client_user):
+        resp = client_user.post(reverse("items:create"), {"nombre": "Test"})
         assert resp.status_code == 403
 
     def test_admin_can_create(self, client_admin, tipo):
         resp = client_admin.post(reverse("items:create"), {
-            "nombre": "Nueva pieza", "tipo": tipo.pk, "observaciones": ""
+            "nombre": "Nueva pieza", "tipos": [tipo.pk], "observaciones": ""
         })
         assert resp.status_code == 302
         assert Item.all_objects.filter(nombre="Nueva pieza").exists()

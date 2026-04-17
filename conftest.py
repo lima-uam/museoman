@@ -29,8 +29,9 @@ def vitrina(db):
 @pytest.fixture
 def item(db, tipo, admin_user):
     from apps.items.models import Item
-    return Item.all_objects.create(
+    obj = Item.all_objects.create(
         nombre="IBM PC XT",
-        tipo=tipo,
         created_by=admin_user,
     )
+    obj.tipos.add(tipo)
+    return obj

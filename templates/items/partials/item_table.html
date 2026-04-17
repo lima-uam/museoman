@@ -18,7 +18,7 @@
         <tr>
           <td><a href="{% url 'items:detail' item.pk %}">{{ item.nombre }}</a></td>
           <td><span class="badge badge-{{ item.estado }}">{{ item.get_estado_display }}</span></td>
-          <td>{{ item.tipo }}</td>
+          <td>{{ item.tipos.all|join:", " }}</td>
           <td>{{ item.vitrina|default:"—" }}</td>
           <td>{{ item.assigned_user.name|default:"—" }}</td>
           <td>{% if not item.activo %}<span class="text-muted">Inactivo</span>{% else %}—{% endif %}</td>

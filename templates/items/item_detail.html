@@ -32,7 +32,7 @@
     <table style="font-size:.9rem">
       <tr><th style="width:38%;background:none">Estado</th><td><span class="badge badge-{{ item.estado }}">{{ item.get_estado_display }}</span></td></tr>
       <tr><th style="background:none">URL</th><td>{% if item.url %}<a href="{{ item.url }}" target="_blank" rel="noopener">{{ item.url }}</a>{% else %}<span class="text-muted">—</span>{% endif %}</td></tr>
-      <tr><th style="background:none">Tipo</th><td>{{ item.tipo }}</td></tr>
+      <tr><th style="background:none">Tipos</th><td>{{ item.tipos.all|join:", "|default:"—" }}</td></tr>
       <tr><th style="background:none">Vitrina</th><td>{{ item.vitrina|default:"—" }}</td></tr>
       <tr><th style="background:none">Usuario asignado</th><td>{{ item.assigned_user.name|default:"—" }}</td></tr>
       <tr><th style="background:none">Creado</th><td>{{ item.created_at|date:"d/m/Y H:i" }}</td></tr>

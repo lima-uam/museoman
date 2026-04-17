@@ -21,15 +21,16 @@ def _add_attrs(form):
 class ItemForm(forms.ModelForm):
     class Meta:
         model = Item
-        fields = ["nombre", "tipo", "vitrina", "url", "observaciones"]
+        fields = ["nombre", "tipos", "vitrina", "url", "observaciones"]
         labels = {
             "nombre": "Nombre",
-            "tipo": "Tipo",
+            "tipos": "Tipos",
             "vitrina": "Vitrina",
             "url": "URL",
             "observaciones": "Observaciones",
         }
         widgets = {
+            "tipos": forms.CheckboxSelectMultiple(),
             "url": forms.URLInput(attrs={"placeholder": "https://...", **_WIDGET_ATTRS}),
             "observaciones": forms.Textarea(attrs={"rows": 3, **_WIDGET_ATTRS}),
         }
@@ -38,7 +39,7 @@ class ItemForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields["vitrina"].required = False
         self.fields["vitrina"].empty_label = "— Sin vitrina —"
-        self.fields["tipo"].queryset = Tipo.objects.all()
+        self.fields["tipos"].queryset = Tipo.objects.all()
         self.fields["vitrina"].queryset = Vitrina.objects.all()
         _add_attrs(self)
 
