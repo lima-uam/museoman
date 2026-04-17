@@ -49,7 +49,13 @@
       </div>
       {% endif %}
       <button type="submit" class="btn btn-primary" style="width:100%">
-        Avanzar a «{{ next_state|capfirst }}»
+        {% if item.estado == 'asignado' %}
+          Enviar a revisión
+        {% elif item.estado == 'en_revision' %}
+          Aceptar cambios
+        {% else %}
+          Avanzar a «{{ next_state|capfirst }}»
+        {% endif %}
       </button>
     </form>
     {% endif %}
@@ -63,7 +69,15 @@
       <input type="hidden" name="target" value="{{ prev_state }}">
       <button type="submit" class="btn btn-secondary" style="width:100%"
               onclick="return confirm('¿Revertir el estado?')">
-        ← Revertir a «{{ prev_state|capfirst }}»
+        {% if item.estado == 'asignado' %}
+          ← Desasignar
+        {% elif item.estado == 'en_revision' %}
+          ← Rechazar cambios
+        {% elif item.estado == 'documentado' %}
+          ← Enviar a revisión
+        {% else %}
+          ← Revertir a «{{ prev_state|capfirst }}»
+        {% endif %}
       </button>
     </form>
     {% endif %}
