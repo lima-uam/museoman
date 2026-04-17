@@ -45,3 +45,36 @@ class TestUserCRUDViews:
         assert resp.status_code == 302
         regular_user.refresh_from_db()
         assert regular_user.name == "Updated Name"
+
+
+@pytest.mark.django_db
+class TestPasswordChange:
+    def test_requires_login(self):
+        c = Client()
+        resp = c.get(reverse("password_change"))
+        assert resp.status_code == 302
+        assert "/login/" in resp.url
+
+    def test_authenticated_can_access(self, regular_user):
+        c = Client()
+        c.force_login(regular_user)
+        resp = c.get(reverse("password_change"))
+        assert resp.status_code == 200
+
+    def test_password_changes(self, regular_user):
+        c = Client()
+        c.force_login(regular_user)
+        resp = c.post(reverse("password_change"), {
+            "old_password": "testpass",
+            "new_password1": "new-complex-pass-456",
+            "new_password2": "new-complex-pass-456",
+        })
+        assert resp.status_code == 302
+        regular_user.refresh_from_db()
+        assert regular_user.check_password("new-complex-pass-456")
+
+    def test_done_page(self, regular_user):
+        c = Client()
+        c.force_login(regular_user)
+        resp = c.get(reverse("password_change_done"))
+        assert resp.status_code == 200

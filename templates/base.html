@@ -41,6 +41,8 @@
   </div>
   <div class="navbar-user">
     {{ user.name }} &nbsp;·&nbsp;
+    <a href="{% url 'password_change' %}" style="color:var(--clr-muted);text-decoration:none">Cambiar contraseña</a>
+    &nbsp;·&nbsp;
     <form method="post" action="{% url 'logout' %}" style="display:inline">
       {% csrf_token %}
       <button type="submit" style="background:none;border:none;color:var(--clr-danger);cursor:pointer;padding:0;font:inherit">Salir</button>
