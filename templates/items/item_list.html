@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block title %}Piezas{% endblock %}
+{% load static %}
 
 {% block content %}
 <div class="flex items-center gap-2 mb-2">
@@ -36,11 +37,13 @@
         </select>
       </div>
       <div class="form-group">
-        <label class="form-label">Tipo</label>
-        <select class="form-control" name="tipo">
-          <option value="">Todos los tipos</option>
+        <label class="form-label">Tipos</label>
+        <select class="form-control" name="tipo" id="id_filter_tipo" multiple>
           {% for t in form.fields.tipo.queryset %}
-          <option value="{{ t.pk }}" {% if form.tipo.value|stringformat:"s" == t.pk|stringformat:"s" %}selected{% endif %}>{{ t }}</option>
+          <option value="{{ t.pk }}"
+            {% for v in form.tipo.value %} {% if v|stringformat:"s" == t.pk|stringformat:"s" %}selected{% endif %}{% endfor %}>
+            {{ t }}
+          </option>
           {% endfor %}
         </select>
       </div>
@@ -80,4 +83,26 @@
 <div id="item-table-container">
   {% include "items/partials/item_table.html" %}
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/css/tom-select.bootstrap5.min.css">
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/js/tom-select.complete.min.js"></script>
+<style>
+  .ts-wrapper { font-size: .875rem; }
+  .ts-control { border: 1px solid var(--clr-border); border-radius: var(--radius); padding: .3rem .55rem; background: var(--clr-surface); min-height: 36px; }
+  .ts-control:focus-within { border-color: var(--clr-primary); box-shadow: 0 0 0 2px rgba(13,110,253,.15); }
+  .ts-dropdown { border: 1px solid var(--clr-border); border-radius: var(--radius); font-size: .875rem; }
+  .ts-dropdown .option:hover, .ts-dropdown .option.active { background: #e8f0fe; color: var(--clr-primary); }
+  .ts-control .item { background: #e8f0fe; color: var(--clr-primary); border-radius: 4px; padding: .1rem .45rem; font-size: .78rem; font-weight: 500; }
+  .ts-control .item .remove { color: var(--clr-primary); opacity: .7; margin-left: .3rem; }
+  .ts-control .item .remove:hover { opacity: 1; }
+</style>
+<script>
+  new TomSelect('#id_filter_tipo', {
+    plugins: ['remove_button'],
+    placeholder: 'Todos los tipos…',
+    maxOptions: null,
+  });
+</script>
 {% endblock %}

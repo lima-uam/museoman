@@ -54,8 +54,11 @@ class ItemFilterForm(forms.Form):
     assigned_user = forms.IntegerField(
         required=False, label="Usuario asignado", widget=forms.HiddenInput
     )
-    tipo = forms.ModelChoiceField(
-        required=False, queryset=Tipo.objects.all(), label="Tipo", empty_label="Todos los tipos"
+    tipo = forms.ModelMultipleChoiceField(
+        required=False,
+        queryset=Tipo.objects.all(),
+        label="Tipos",
+        widget=forms.SelectMultiple(attrs={"class": "form-control", "id": "id_filter_tipo"}),
     )
     vitrina = forms.ModelChoiceField(
         required=False,
