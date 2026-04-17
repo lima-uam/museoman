@@ -12,6 +12,7 @@ dependencies = [
     "requests>=2.32",
     "django-htmx>=1.23",
     "gunicorn>=25.3.0",
+    "whitenoise>=6.12.0",
 ]
 
 [dependency-groups]
