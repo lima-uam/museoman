@@ -5,15 +5,32 @@ services:
       POSTGRES_USER: museoman
       POSTGRES_PASSWORD: museoman
       POSTGRES_DB: museoman
-    ports:
-      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - museoman_net
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U museoman -d museoman"]
       interval: 5s
       timeout: 5s
       retries: 10
 
+  web:
+    build: .
+    env_file: .env
+    ports:
+      - "8000:8000"
+    volumes:
+      - media_data:/app/media
+    networks:
+      - museoman_net
+    depends_on:
+      db:
+        condition: service_healthy
+
+networks:
+  museoman_net:
+
 volumes:
   postgres_data:
+  media_data:
