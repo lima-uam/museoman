@@ -43,7 +43,9 @@ class ItemListView(LoginRequiredMixin, View):
             if assigned_user_id:
                 qs = qs.filter(assigned_user_id=assigned_user_id)
             if tipo:
-                qs = qs.filter(tipos__in=tipo).distinct()
+                for t in tipo:
+                    qs = qs.filter(tipos=t)
+                qs = qs.distinct()
             if vitrina:
                 qs = qs.filter(vitrina=vitrina)
             if activo == "1":
