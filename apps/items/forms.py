@@ -21,14 +21,16 @@ def _add_attrs(form):
 class ItemForm(forms.ModelForm):
     class Meta:
         model = Item
-        fields = ["nombre", "tipo", "vitrina", "observaciones"]
+        fields = ["nombre", "tipo", "vitrina", "url", "observaciones"]
         labels = {
             "nombre": "Nombre",
             "tipo": "Tipo",
             "vitrina": "Vitrina",
+            "url": "URL",
             "observaciones": "Observaciones",
         }
         widgets = {
+            "url": forms.URLInput(attrs={"placeholder": "https://...", **_WIDGET_ATTRS}),
             "observaciones": forms.Textarea(attrs={"rows": 3, **_WIDGET_ATTRS}),
         }
 

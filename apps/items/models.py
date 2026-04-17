@@ -17,6 +17,7 @@ class AllItemManager(models.Manager):
 
 class Item(models.Model):
     nombre = models.CharField(max_length=200, verbose_name="nombre")
+    url = models.URLField(max_length=500, blank=True, default="", verbose_name="URL")
     estado = models.CharField(
         max_length=20,
         choices=State.choices,
