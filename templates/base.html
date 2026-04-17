@@ -59,13 +59,11 @@
 </nav>
 
 <div class="container">
-  {% if messages %}
-  <ul class="messages">
+  <ul class="messages" id="flash-messages">
     {% for message in messages %}
     <li class="message message-{{ message.tags }}">{{ message }}</li>
     {% endfor %}
   </ul>
-  {% endif %}
 
   {% block content %}{% endblock %}
 </div>

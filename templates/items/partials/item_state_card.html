@@ -1,5 +1,5 @@
 {% load items_tags %}
-<div class="card">
+<div class="card" id="state-card">
   <div class="card-header">Estado</div>
   <div style="text-align:center;padding:.5rem 0 1rem">
     <span class="badge badge-{{ item.estado }}" style="font-size:1rem;padding:.4rem 1rem">
@@ -74,3 +74,8 @@
   </p>
   {% endif %}
 </div>
+<ul id="flash-messages" class="messages" hx-swap-oob="true">
+  {% for message in messages %}
+  <li class="message message-{{ message.tags }}">{{ message }}</li>
+  {% endfor %}
+</ul>
