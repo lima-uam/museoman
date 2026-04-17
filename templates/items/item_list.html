@@ -99,9 +99,9 @@
 <script src="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/js/tom-select.complete.min.js"></script>
 <style>
   .ts-wrapper { font-size: .875rem; }
-  .ts-control { border: 1px solid var(--clr-border); border-radius: var(--radius); padding: .3rem .55rem; background: var(--clr-surface); min-height: 36px; }
+  .ts-wrapper .ts-control { border: 1px solid var(--clr-border); border-radius: var(--radius); padding: .3rem .55rem; background-color: var(--clr-surface); min-height: 36px; }
   .ts-control:focus-within { border-color: var(--clr-primary); box-shadow: 0 0 0 2px rgba(13,110,253,.15); }
-  .ts-dropdown { border: 1px solid var(--clr-border); border-radius: var(--radius); font-size: .875rem; }
+  .ts-dropdown { border: 1px solid var(--clr-border); border-radius: var(--radius); font-size: .875rem; background-color: var(--clr-surface); z-index: 100; }
   .ts-dropdown .option:hover, .ts-dropdown .option.active { background: #e8f0fe; color: var(--clr-primary); }
   .ts-control .item { background: #e8f0fe; color: var(--clr-primary); border-radius: 4px; padding: .1rem .45rem; font-size: .78rem; font-weight: 500; }
   .ts-control .item .remove { color: var(--clr-primary); opacity: .7; margin-left: .3rem; }

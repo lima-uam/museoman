@@ -79,3 +79,7 @@
   <li class="message message-{{ message.tags }}">{{ message }}</li>
   {% endfor %}
 </ul>
+{% if request.htmx %}
+{% include "items/partials/item_header.html" with oob=True %}
+{% include "items/partials/item_info.html" with oob=True %}
+{% endif %}
