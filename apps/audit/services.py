@@ -30,7 +30,7 @@ def record(action: str, item, actor, *, from_state: str = "", to_state: str = ""
 
 def _build_discord_message(log: AuditLog) -> str:
     actor_name = log.actor.name if log.actor else "Sistema"
-    item_str = f"**{log.item.identificador}** — {log.item.nombre}"
+    item_str = f"**#{log.item.pk}** — {log.item.nombre}"
     action_label = log.get_action_display()
 
     if log.action == AuditLog.ACTION_STATE_CHANGE:

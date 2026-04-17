@@ -1,11 +1,11 @@
 {% extends "base.html" %}
-{% block title %}{{ item.identificador }} — {{ item.nombre }}{% endblock %}
+{% block title %}{{ item.nombre }}{% endblock %}
 
 {% block content %}
 <div class="flex items-center gap-2 mb-2">
   <h1 class="page-title" style="margin:0;flex:1">
     {{ item.nombre }}
-    <span class="text-muted" style="font-weight:400;font-size:1rem"> / {{ item.identificador }}</span>
+    <span class="text-muted" style="font-weight:400;font-size:1rem"> #{{ item.pk }}</span>
   </h1>
   {% if user.is_staff %}
   <a href="{% url 'items:update' item.pk %}" class="btn btn-sm btn-secondary">Editar</a>

@@ -11,8 +11,8 @@ class ItemPhotoInline(admin.TabularInline):
 
 @admin.register(Item)
 class ItemAdmin(admin.ModelAdmin):
-    list_display = ["identificador", "nombre", "estado", "assigned_user", "tipo", "activo"]
+    list_display = ["nombre", "estado", "assigned_user", "tipo", "activo"]
     list_filter = ["estado", "tipo", "vitrina", "activo"]
-    search_fields = ["nombre", "identificador"]
+    search_fields = ["nombre"]
     inlines = [ItemPhotoInline]
     readonly_fields = ["created_at", "created_by", "updated_at"]

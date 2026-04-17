@@ -45,7 +45,7 @@ class ItemFilterForm(forms.Form):
     q = forms.CharField(
         required=False,
         label="Buscar",
-        widget=forms.TextInput(attrs={"placeholder": "Nombre o identificador"}),
+        widget=forms.TextInput(attrs={"placeholder": "Buscar por nombre…"}),
     )
     estado = forms.ChoiceField(required=False, label="Estado", choices=[])
     assigned_user = forms.IntegerField(
@@ -73,7 +73,6 @@ class ItemFilterForm(forms.Form):
             ("nombre", "Nombre A-Z"),
             ("-nombre", "Nombre Z-A"),
             ("estado", "Estado"),
-            ("identificador", "Identificador"),
             ("-created_at", "Más recientes"),
             ("created_at", "Más antiguos"),
         ],

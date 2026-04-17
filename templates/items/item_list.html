@@ -20,7 +20,7 @@
       <div class="form-group flex-1">
         {{ form.q.label_tag }}
         <input class="form-control" type="text" name="q" value="{{ form.q.value|default:'' }}"
-               placeholder="Nombre o identificador"
+               placeholder="Buscar por nombre…"
                hx-get="{% url 'items:list' %}"
                hx-target="#item-table-container"
                hx-push-url="true"

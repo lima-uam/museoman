@@ -40,35 +40,26 @@ class TestItemListView:
         assert item.nombre in resp.content.decode()
 
     def test_hides_inactive_items_by_default(self, client_admin, item):
-        item.refresh_from_db()
         item.activo = False
         item.save()
         resp = client_admin.get(reverse("items:list") + "?activo=1")
-        assert item.identificador not in resp.content.decode()
+        assert item.nombre not in resp.content.decode()
 
     def test_shows_inactive_with_filter(self, client_admin, item):
-        item.refresh_from_db()
         item.activo = False
         item.save()
         resp = client_admin.get(reverse("items:list") + "?activo=0")
-        assert item.identificador in resp.content.decode()
+        assert item.nombre in resp.content.decode()
 
     def test_text_search_nombre(self, client_admin, item):
-        item.refresh_from_db()
         resp = client_admin.get(reverse("items:list") + f"?q={item.nombre[:5]}&activo=")
-        assert item.identificador in resp.content.decode()
-
-    def test_text_search_identificador(self, client_admin, item):
-        item.refresh_from_db()
-        resp = client_admin.get(reverse("items:list") + f"?q={item.identificador}&activo=")
         assert item.nombre in resp.content.decode()
 
     def test_filter_by_estado(self, client_admin, item):
-        item.refresh_from_db()
         resp = client_admin.get(reverse("items:list") + "?estado=libre&activo=1")
-        assert item.identificador in resp.content.decode()
+        assert item.nombre in resp.content.decode()
         resp2 = client_admin.get(reverse("items:list") + "?estado=documentado&activo=1")
-        assert item.identificador not in resp2.content.decode()
+        assert item.nombre not in resp2.content.decode()
 
     def test_pagination(self, client_admin, tipo, admin_user):
         for i in range(25):
@@ -85,11 +76,10 @@ class TestItemDetailView:
         assert resp.status_code == 302
 
     def test_shows_item_details(self, client_admin, item):
-        item.refresh_from_db()
         resp = client_admin.get(reverse("items:detail", kwargs={"pk": item.pk}))
         assert resp.status_code == 200
         assert item.nombre in resp.content.decode()
-        assert item.identificador in resp.content.decode()
+        assert str(item.pk) in resp.content.decode()
 
     def test_shows_inactive_item(self, client_admin, item):
         item.activo = False
@@ -109,9 +99,7 @@ class TestItemCreateView:
             "nombre": "Nueva pieza", "tipo": tipo.pk, "observaciones": ""
         })
         assert resp.status_code == 302
-        obj = Item.all_objects.filter(nombre="Nueva pieza").first()
-        assert obj is not None
-        assert obj.identificador.startswith("PIEZA-")
+        assert Item.all_objects.filter(nombre="Nueva pieza").exists()
 
 
 @pytest.mark.django_db

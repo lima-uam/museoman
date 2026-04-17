@@ -5,7 +5,6 @@
     <table>
       <thead>
         <tr>
-          <th>Identificador</th>
           <th>Nombre</th>
           <th>Estado</th>
           <th>Tipo</th>
@@ -17,8 +16,7 @@
       <tbody>
         {% for item in page_obj %}
         <tr>
-          <td><a href="{% url 'items:detail' item.pk %}">{{ item.identificador }}</a></td>
-          <td>{{ item.nombre }}</td>
+          <td><a href="{% url 'items:detail' item.pk %}">{{ item.nombre }}</a></td>
           <td><span class="badge badge-{{ item.estado }}">{{ item.get_estado_display }}</span></td>
           <td>{{ item.tipo }}</td>
           <td>{{ item.vitrina|default:"—" }}</td>

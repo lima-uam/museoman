@@ -47,16 +47,16 @@ class Command(BaseCommand):
 
         # Items
         demo_items = [
-            ("PC-001", "IBM PC XT 5160", tipos[0], vitrinas[0]),
-            ("DD-001", "Disco duro IBM 20MB", tipos[1], vitrinas[0]),
-            ("MON-001", "Monitor VGA 14\"", tipos[2], vitrinas[1]),
-            ("TEC-001", "Teclado PS/2 IBM", tipos[3], None),
-            ("PC-002", "Commodore 64", tipos[0], vitrinas[2]),
+            ("IBM PC XT 5160", tipos[0], vitrinas[0]),
+            ("Disco duro IBM 20MB", tipos[1], vitrinas[0]),
+            ("Monitor VGA 14\"", tipos[2], vitrinas[1]),
+            ("Teclado PS/2 IBM", tipos[3], None),
+            ("Commodore 64", tipos[0], vitrinas[2]),
         ]
-        for ident, nombre, tipo, vitrina in demo_items:
+        for nombre, tipo, vitrina in demo_items:
             Item.all_objects.get_or_create(
-                identificador=ident,
-                defaults={"nombre": nombre, "tipo": tipo, "vitrina": vitrina, "created_by": admin},
+                nombre=nombre,
+                defaults={"tipo": tipo, "vitrina": vitrina, "created_by": admin},
             )
         self.stdout.write(f"Piezas: {len(demo_items)}")
 

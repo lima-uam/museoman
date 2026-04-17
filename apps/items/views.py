@@ -37,7 +37,7 @@ class ItemListView(LoginRequiredMixin, View):
             sort = form.cleaned_data.get("sort")
 
             if q:
-                qs = qs.filter(Q(nombre__icontains=q) | Q(identificador__icontains=q))
+                qs = qs.filter(Q(nombre__icontains=q))
             if estado:
                 qs = qs.filter(estado=estado)
             if assigned_user_id:

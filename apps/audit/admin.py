@@ -7,7 +7,7 @@ from .models import AuditLog
 class AuditLogAdmin(admin.ModelAdmin):
     list_display = ["item", "action", "actor", "from_state", "to_state", "created_at"]
     list_filter = ["action"]
-    search_fields = ["item__nombre", "item__identificador"]
+    search_fields = ["item__nombre"]
     readonly_fields = ["item", "actor", "action", "from_state", "to_state", "payload", "created_at"]
 
     def has_add_permission(self, request):
