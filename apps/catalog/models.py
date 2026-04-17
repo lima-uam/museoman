@@ -18,6 +18,7 @@ class Tipo(models.Model):
 class Vitrina(models.Model):
     numero = models.PositiveIntegerField(unique=True, verbose_name="número")
     nombre = models.CharField(max_length=100, verbose_name="nombre", blank=True, default="")
+    url = models.URLField(max_length=500, blank=True, default="", verbose_name="URL")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
