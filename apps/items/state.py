@@ -37,6 +37,8 @@ def can_revert(item, user) -> bool:
     current = item.estado
     if current not in BACKWARD:
         return False
+    if current == State.EN_REVISION:
+        return user.is_staff
     return item.assigned_user == user or user.is_staff
 
 
@@ -46,6 +48,8 @@ def can_transition(item, target: str, user) -> bool:
     if FORWARD.get(current) == target:
         return _check_permission(current, target, item, user)
     if BACKWARD.get(current) == target:
+        if current == State.EN_REVISION:
+            return user.is_staff
         return item.assigned_user == user or user.is_staff
     return False
 

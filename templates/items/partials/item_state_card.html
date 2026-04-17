@@ -48,13 +48,6 @@
         </select>
       </div>
       {% endif %}
-      {% if next_state == 'en_revision' and not item.url %}
-      <div class="form-group">
-        <label class="form-label">URL <span style="color:var(--clr-danger)">*</span></label>
-        <input class="form-control" type="url" name="url" placeholder="https://..." required>
-        <div style="font-size:.78rem;color:var(--clr-muted);margin-top:.25rem">Requerida para pasar a revisión.</div>
-      </div>
-      {% endif %}
       <button type="submit" class="btn btn-primary" style="width:100%">
         Avanzar a «{{ next_state|capfirst }}»
       </button>

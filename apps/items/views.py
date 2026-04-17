@@ -126,10 +126,20 @@ class ItemCreateView(AdminRequiredMixin, CreateView):
         return ctx
 
 
-class ItemUpdateView(AdminRequiredMixin, UpdateView):
+class ItemUpdateView(LoginRequiredMixin, UpdateView):
     model = Item
     form_class = ItemForm
     template_name = "items/item_form.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return self.handle_no_permission()
+        item = get_object_or_404(Item.all_objects, pk=kwargs["pk"])
+        if not request.user.is_staff:
+            from django.core.exceptions import PermissionDenied
+            if not (item.estado == State.ASIGNADO and item.assigned_user == request.user):
+                raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
 
     def get_object(self, queryset=None):
         return get_object_or_404(Item.all_objects, pk=self.kwargs["pk"])

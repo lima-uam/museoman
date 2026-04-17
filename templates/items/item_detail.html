@@ -7,7 +7,7 @@
     {{ item.nombre }}
     <span class="text-muted" style="font-weight:400;font-size:1rem"> #{{ item.pk }}</span>
   </h1>
-  {% if user.is_staff %}
+  {% if user.is_staff or item.estado == 'asignado' and user == item.assigned_user %}
   <a href="{% url 'items:update' item.pk %}" class="btn btn-sm btn-secondary">Editar</a>
   <form method="post" action="{% url 'items:deactivate' item.pk %}" style="display:inline">
     {% csrf_token %}
