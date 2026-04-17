@@ -114,6 +114,7 @@ class ItemCreateView(AdminRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.created_by = self.request.user
         response = super().form_valid(form)
+        record(AuditLog.ACTION_CREATED, self.object, self.request.user)
         messages.success(self.request, "Pieza creada correctamente.")
         return response
 
@@ -145,8 +146,10 @@ class ItemUpdateView(LoginRequiredMixin, UpdateView):
         return get_object_or_404(Item.all_objects, pk=self.kwargs["pk"])
 
     def form_valid(self, form):
+        response = super().form_valid(form)
+        record(AuditLog.ACTION_UPDATED, self.object, self.request.user)
         messages.success(self.request, "Pieza actualizada.")
-        return super().form_valid(form)
+        return response
 
     def get_success_url(self):
         return reverse_lazy("items:detail", kwargs={"pk": self.object.pk})

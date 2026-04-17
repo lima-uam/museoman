@@ -9,6 +9,11 @@ class AuditLog(models.Model):
     ACTION_ACTIVATED = "activated"
     ACTION_PHOTO_ADDED = "photo_added"
     ACTION_PHOTO_DELETED = "photo_deleted"
+    ACTION_CREATED = "created"
+    ACTION_UPDATED = "updated"
+    ACTION_VITRINA_CREATED = "vitrina_created"
+    ACTION_VITRINA_UPDATED = "vitrina_updated"
+    ACTION_VITRINA_DELETED = "vitrina_deleted"
 
     ACTION_CHOICES = [
         (ACTION_STATE_CHANGE, "Cambio de estado"),
@@ -17,13 +22,28 @@ class AuditLog(models.Model):
         (ACTION_ACTIVATED, "Activación"),
         (ACTION_PHOTO_ADDED, "Foto añadida"),
         (ACTION_PHOTO_DELETED, "Foto eliminada"),
+        (ACTION_CREATED, "Creación"),
+        (ACTION_UPDATED, "Edición"),
+        (ACTION_VITRINA_CREATED, "Vitrina creada"),
+        (ACTION_VITRINA_UPDATED, "Vitrina editada"),
+        (ACTION_VITRINA_DELETED, "Vitrina eliminada"),
     ]
 
     item = models.ForeignKey(
         "items.Item",
         on_delete=models.CASCADE,
+        null=True,
+        blank=True,
         related_name="audit_logs",
         verbose_name="pieza",
+    )
+    vitrina = models.ForeignKey(
+        "catalog.Vitrina",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="audit_logs",
+        verbose_name="vitrina",
     )
     actor = models.ForeignKey(
         settings.AUTH_USER_MODEL,

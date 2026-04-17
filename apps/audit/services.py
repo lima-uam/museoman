@@ -15,7 +15,7 @@ STATE_LABELS = {
 
 
 def record(action: str, item, actor, *, from_state: str = "", to_state: str = "", payload: dict | None = None):
-    """Create an AuditLog entry and post to Discord (best-effort)."""
+    """Create an AuditLog entry for an item and post to Discord (best-effort)."""
     log = AuditLog.objects.create(
         item=item,
         actor=actor,
@@ -28,10 +28,27 @@ def record(action: str, item, actor, *, from_state: str = "", to_state: str = ""
     return log
 
 
+def record_vitrina(action: str, vitrina, actor, *, payload: dict | None = None):
+    """Create an AuditLog entry for a vitrina and post to Discord (best-effort)."""
+    log = AuditLog.objects.create(
+        vitrina=vitrina,
+        actor=actor,
+        action=action,
+        payload=payload or {},
+    )
+    _post_discord(log)
+    return log
+
+
 def _build_discord_message(log: AuditLog) -> str:
     actor_name = log.actor.name if log.actor else "Sistema"
-    item_str = f"**#{log.item.pk}** — {log.item.nombre}"
     action_label = log.get_action_display()
+
+    if log.vitrina is not None:
+        subject = f"**Vitrina #{log.vitrina.pk}** — {log.vitrina.nombre or '(sin nombre)'}"
+        return f"[Museoman] {subject} | {action_label} | por {actor_name}"
+
+    item_str = f"**#{log.item.pk}** — {log.item.nombre}"
 
     if log.action == AuditLog.ACTION_STATE_CHANGE:
         from_label = STATE_LABELS.get(log.from_state, log.from_state)

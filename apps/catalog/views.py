@@ -3,6 +3,8 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
 from apps.accounts.mixins import AdminRequiredMixin
+from apps.audit.models import AuditLog
+from apps.audit.services import record_vitrina
 
 from .forms import TipoForm, VitrinaForm
 from .models import Tipo, Vitrina
@@ -72,8 +74,10 @@ class VitrinaCreateView(AdminRequiredMixin, CreateView):
     success_url = reverse_lazy("catalog:vitrina_list")
 
     def form_valid(self, form):
+        response = super().form_valid(form)
+        record_vitrina(AuditLog.ACTION_VITRINA_CREATED, self.object, self.request.user)
         messages.success(self.request, "Vitrina creada correctamente.")
-        return super().form_valid(form)
+        return response
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -88,8 +92,10 @@ class VitrinaUpdateView(AdminRequiredMixin, UpdateView):
     success_url = reverse_lazy("catalog:vitrina_list")
 
     def form_valid(self, form):
+        response = super().form_valid(form)
+        record_vitrina(AuditLog.ACTION_VITRINA_UPDATED, self.object, self.request.user)
         messages.success(self.request, "Vitrina actualizada.")
-        return super().form_valid(form)
+        return response
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -103,5 +109,7 @@ class VitrinaDeleteView(AdminRequiredMixin, DeleteView):
     success_url = reverse_lazy("catalog:vitrina_list")
 
     def form_valid(self, form):
+        record_vitrina(AuditLog.ACTION_VITRINA_DELETED, self.object, self.request.user,
+                       payload={"nombre": self.object.nombre, "pk": self.object.pk})
         messages.success(self.request, "Vitrina eliminada.")
         return super().form_valid(form)
