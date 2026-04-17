@@ -1,4 +1,5 @@
 import logging
+import threading
 
 from django.conf import settings
 
@@ -65,6 +66,10 @@ def _post_discord(log: AuditLog):
     if not url:
         return
 
+    threading.Thread(target=_send_discord, args=(url, log), daemon=True).start()
+
+
+def _send_discord(url: str, log: AuditLog):
     import requests
 
     try:
