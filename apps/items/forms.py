@@ -30,7 +30,7 @@ class ItemForm(forms.ModelForm):
             "observaciones": "Observaciones",
         }
         widgets = {
-            "tipos": forms.CheckboxSelectMultiple(),
+            "tipos": forms.SelectMultiple(attrs={"class": "form-control", "id": "id_tipos"}),
             "url": forms.URLInput(attrs={"placeholder": "https://...", **_WIDGET_ATTRS}),
             "observaciones": forms.Textarea(attrs={"rows": 3, **_WIDGET_ATTRS}),
         }
