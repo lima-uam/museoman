@@ -35,7 +35,6 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                     filter=Q(assigned_items__activo=True, assigned_items__estado=State.DOCUMENTADO),
                 ),
             )
-            .filter(total__gt=0)
             .order_by("-total")
         )
         ctx["users_items"] = users_items
