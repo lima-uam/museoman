@@ -17,7 +17,14 @@ services:
 
   web:
     build: .
-    env_file: .env
+    environment:
+      SECRET_KEY: cambia-esta-clave-en-produccion
+      DEBUG: "False"
+      ALLOWED_HOSTS: localhost,127.0.0.1
+      DATABASE_URL: postgresql://museoman:museoman@db:5432/museoman
+      DISCORD_WEBHOOK_URL: ""
+      MEDIA_ROOT: /app/media
+      STATIC_ROOT: /app/staticfiles
     ports:
       - "8000:8000"
     volumes:
