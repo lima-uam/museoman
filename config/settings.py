@@ -95,9 +95,8 @@ STATIC_URL = f"{URL_PATH}/static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = os.environ.get("STATIC_ROOT", BASE_DIR / "staticfiles")
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-WHITENOISE_STATIC_PREFIX = "/static"
 
-MEDIA_URL = "/media/"
+MEDIA_URL = f"{URL_PATH}/media/"
 MEDIA_ROOT = os.environ.get("MEDIA_ROOT", BASE_DIR / "media")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
