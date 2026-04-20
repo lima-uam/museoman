@@ -1,6 +1,7 @@
 services:
   db:
     image: postgres:16
+    restart: unless-stopped
     environment:
       POSTGRES_USER: museoman
       POSTGRES_PASSWORD: museoman
@@ -17,6 +18,7 @@ services:
 
   web:
     build: .
+    restart: unless-stopped
     environment:
       # URL_PATH: "/museo"
       # USE_X_FORWARDED_HOST: False
