@@ -40,3 +40,5 @@ coverage.xml
 # OS
 .DS_Store
 Thumbs.db
+
+docker-compose.yml

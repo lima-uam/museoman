@@ -18,7 +18,7 @@ services:
   web:
     build: .
     environment:
-      # PATH: "/museo"
+      # URL_PATH: "/museo"
       # USE_X_FORWARDED_HOST: False
       SECRET_KEY: cambia-esta-clave-en-produccion
       DEBUG: "False"
