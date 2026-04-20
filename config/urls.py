@@ -10,8 +10,8 @@ from apps.accounts.forms import PasswordChangeFormStyled
 
 def root_redirect(request):
     if request.user.is_authenticated:
-        return redirect("/dashboard/")
-    return redirect("/about/")
+        return redirect(f"{settings.URL_PATH}/dashboard/")
+    return redirect(f"{settings.URL_PATH}/about/")
 
 
 urlpatterns = [
