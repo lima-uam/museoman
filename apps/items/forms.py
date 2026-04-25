@@ -22,16 +22,20 @@ def _add_attrs(form):
 class ItemForm(forms.ModelForm):
     class Meta:
         model = Item
-        fields = ["nombre", "tipos", "vitrina", "url", "observaciones"]
+        fields = ["nombre", "tipos", "vitrina", "vitrina_slot", "url", "observaciones"]
         labels = {
             "nombre": "Nombre",
             "tipos": "Tipos",
             "vitrina": "Vitrina",
+            "vitrina_slot": "Slot en vitrina",
             "url": "URL",
             "observaciones": "Observaciones",
         }
         widgets = {
             "tipos": forms.SelectMultiple(attrs={"class": "form-control", "id": "id_tipos"}),
+            "vitrina_slot": forms.TextInput(
+                attrs={"maxlength": 1, "placeholder": "0-9 / A-F", "style": "text-transform:uppercase;width:5rem"}
+            ),
             "url": forms.URLInput(attrs={"placeholder": "https://...", **_WIDGET_ATTRS}),
             "observaciones": forms.Textarea(attrs={"rows": 3, **_WIDGET_ATTRS}),
         }
@@ -40,9 +44,40 @@ class ItemForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields["vitrina"].required = False
         self.fields["vitrina"].empty_label = "— Sin vitrina —"
+        self.fields["vitrina_slot"].required = False
+        # Validators run before clean(); remove them here and re-apply after uppercasing in clean()
+        self.fields["vitrina_slot"].validators = []
         self.fields["tipos"].queryset = Tipo.objects.all()
         self.fields["vitrina"].queryset = Vitrina.objects.all()
         _add_attrs(self)
+
+    def clean(self):
+        import re
+
+        cleaned = super().clean()
+        vitrina = cleaned.get("vitrina")
+        slot = cleaned.get("vitrina_slot", "").strip().upper()
+        cleaned["vitrina_slot"] = slot
+
+        # Validate hex format after uppercasing
+        if slot and not re.match(r"^[0-9A-F]$", slot):
+            self.add_error("vitrina_slot", "Introduce un carácter hexadecimal válido (0-9 o A-F).")
+            return cleaned
+
+        # Clear slot when vitrina changes (not on first assignment)
+        if self.instance.pk and self.instance.vitrina is not None and self.instance.vitrina != vitrina:
+            cleaned["vitrina_slot"] = ""
+            slot = ""
+
+        # Enforce uniqueness within the vitrina
+        if vitrina and slot:
+            qs = Item.all_objects.filter(vitrina=vitrina, vitrina_slot=slot)
+            if self.instance.pk:
+                qs = qs.exclude(pk=self.instance.pk)
+            if qs.exists():
+                self.add_error("vitrina_slot", f"El slot '{slot}' ya está ocupado en esta vitrina.")
+
+        return cleaned
 
 
 class ItemFilterForm(forms.Form):

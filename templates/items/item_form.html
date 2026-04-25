@@ -42,5 +42,8 @@
     placeholder: 'Buscar y añadir tipos…',
     maxOptions: null,
   });
+  document.getElementById('id_vitrina').addEventListener('change', function() {
+    document.getElementById('id_vitrina_slot').value = '';
+  });
 </script>
 {% endblock %}

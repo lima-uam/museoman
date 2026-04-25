@@ -1,9 +1,12 @@
 import os
 
 from django.conf import settings
+from django.core.validators import RegexValidator
 from django.db import models
 
 from .state import State
+
+_hex_validator = RegexValidator(r"^[0-9A-F]$", "Introduce un carácter hexadecimal válido (0-9 o A-F).")
 
 
 class ActiveItemManager(models.Manager):
@@ -47,6 +50,13 @@ class Item(models.Model):
         related_name="items",
         verbose_name="vitrina",
     )
+    vitrina_slot = models.CharField(
+        max_length=1,
+        blank=True,
+        default="",
+        verbose_name="slot en vitrina",
+        validators=[_hex_validator],
+    )
     activo = models.BooleanField(default=True, verbose_name="activo")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="fecha de creación")
     created_by = models.ForeignKey(
@@ -72,6 +82,13 @@ class Item(models.Model):
             models.Index(fields=["assigned_user"]),
             models.Index(fields=["vitrina"]),
             models.Index(fields=["activo"]),
+        ]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["vitrina", "vitrina_slot"],
+                condition=models.Q(vitrina__isnull=False) & ~models.Q(vitrina_slot=""),
+                name="unique_item_vitrina_slot",
+            )
         ]
 
     def __str__(self):
