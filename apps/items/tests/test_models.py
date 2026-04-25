@@ -78,8 +78,9 @@ class TestVitrinaSlotForm:
         return client.post(reverse("items:update", kwargs={"pk": item.pk}), data)
 
     def test_slot_cleared_when_vitrina_changes(self, client, admin_user, item, vitrina):
-        from apps.catalog.models import Vitrina
         from django.urls import reverse
+
+        from apps.catalog.models import Vitrina
 
         client.force_login(admin_user)
         v2 = Vitrina.objects.create(nombre="Otra")

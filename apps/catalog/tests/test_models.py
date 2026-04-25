@@ -42,7 +42,7 @@ class TestVitrinaListPieceCount:
         item.vitrina = vitrina
         item.save()
         # Create an inactive item in the same vitrina — should not count
-        inactive = Item.all_objects.create(nombre="Inactivo", created_by=admin_user, vitrina=vitrina, activo=False)
+        Item.all_objects.create(nombre="Inactivo", created_by=admin_user, vitrina=vitrina, activo=False)
 
         c = Client()
         c.force_login(admin_user)

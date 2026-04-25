@@ -171,6 +171,8 @@ make createadmin           # create admin user interactively
 
 Test settings: `config/test_settings.py`. Fixtures in `conftest.py` (root): `admin_user`, `regular_user`, `tipo`, `vitrina`, `item`.
 
+**Before every commit:** run `make fmt` then `make test-fast`. Both must pass cleanly.
+
 ---
 
 ## Non-functional requirements
