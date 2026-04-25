@@ -5,6 +5,7 @@
     <table>
       <thead>
         <tr>
+          <th style="width:52px"></th>
           <th>Nombre</th>
           <th>Estado</th>
           <th>Tipo</th>
@@ -15,7 +16,19 @@
       </thead>
       <tbody>
         {% for item in page_obj %}
+        {% with photos=item.photos.all %}
         <tr>
+          <td style="padding:.4rem .5rem">
+            {% if photos %}
+            {% with first=photos.0 %}
+            <div class="item-thumb" data-photos="{% for p in photos %}{{ p.image.url }}{% if not forloop.last %}|{% endif %}{% endfor %}">
+              <img src="{{ first.image.url }}" alt="" loading="lazy">
+            </div>
+            {% endwith %}
+            {% else %}
+            <div class="item-thumb item-thumb-empty">—</div>
+            {% endif %}
+          </td>
           <td><a href="{% url 'items:detail' item.pk %}">{{ item.nombre }}</a></td>
           <td><span class="badge badge-{{ item.estado }}">{{ item.get_estado_display }}</span></td>
           <td>{{ item.tipos.all|join:", " }}</td>
@@ -23,6 +36,7 @@
           <td>{{ item.assigned_user.name|default:"—" }}</td>
           <td>{% if not item.activo %}<span class="text-muted">Inactivo</span>{% else %}—{% endif %}</td>
         </tr>
+        {% endwith %}
         {% endfor %}
       </tbody>
     </table>
@@ -47,4 +61,9 @@
   {% else %}
   <p class="text-muted text-center">No se encontraron piezas con los filtros seleccionados.</p>
   {% endif %}
+</div>
+
+<div id="item-thumb-preview" hidden>
+  <img alt="">
+  <span class="counter"></span>
 </div>

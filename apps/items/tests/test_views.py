@@ -88,6 +88,28 @@ class TestItemListView:
         resp = client_admin.get(reverse("items:list") + "?activo=1")
         assert resp.status_code == 200
 
+    def test_placeholder_shown_when_no_photos(self, client_admin, item):
+        resp = client_admin.get(reverse("items:list") + "?activo=1")
+        assert b"item-thumb-empty" in resp.content
+
+    def test_thumbnail_shown_when_item_has_photo(self, client_admin, item, admin_user):
+        from apps.items.models import ItemPhoto
+
+        ItemPhoto.objects.create(item=item, image="items/1/test.jpg", uploaded_by=admin_user)
+        resp = client_admin.get(reverse("items:list") + "?activo=1")
+        assert b"items/1/test.jpg" in resp.content
+
+    def test_all_photo_urls_in_data_attr(self, client_admin, item, admin_user):
+        from apps.items.models import ItemPhoto
+
+        ItemPhoto.objects.create(item=item, image="items/1/a.jpg", uploaded_by=admin_user)
+        ItemPhoto.objects.create(item=item, image="items/1/b.jpg", uploaded_by=admin_user)
+        resp = client_admin.get(reverse("items:list") + "?activo=1")
+        content = resp.content.decode()
+        assert "items/1/a.jpg" in content
+        assert "items/1/b.jpg" in content
+        assert "data-photos" in content
+
 
 @pytest.mark.django_db
 class TestItemDetailView:

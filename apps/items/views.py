@@ -25,7 +25,7 @@ class ItemListView(LoginRequiredMixin, View):
 
     def get(self, request):
         form = ItemFilterForm(request.GET)
-        qs = Item.all_objects.select_related("assigned_user", "vitrina").prefetch_related("tipos")
+        qs = Item.all_objects.select_related("assigned_user", "vitrina").prefetch_related("tipos", "photos")
 
         if form.is_valid():
             q = form.cleaned_data.get("q")
