@@ -142,6 +142,7 @@ body {
 .form-control:focus { outline: none; border-color: var(--clr-primary); box-shadow: 0 0 0 2px rgba(13,110,253,.15); }
 select.form-control { cursor: pointer; }
 textarea.form-control { resize: vertical; }
+.vitrina-slot-input { text-transform: uppercase; width: 6rem; }
 
 .form-check { display: flex; align-items: center; gap: .4rem; }
 .form-check input[type=checkbox] { width: 15px; height: 15px; cursor: pointer; }

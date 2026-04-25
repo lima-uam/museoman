@@ -27,14 +27,14 @@ class ItemForm(forms.ModelForm):
             "nombre": "Nombre",
             "tipos": "Tipos",
             "vitrina": "Vitrina",
-            "vitrina_slot": "Slot en vitrina",
+            "vitrina_slot": "Slot",
             "url": "URL",
             "observaciones": "Observaciones",
         }
         widgets = {
             "tipos": forms.SelectMultiple(attrs={"class": "form-control", "id": "id_tipos"}),
             "vitrina_slot": forms.TextInput(
-                attrs={"maxlength": 1, "placeholder": "0-9 / A-F", "style": "text-transform:uppercase;width:5rem"}
+                attrs={"maxlength": 1, "placeholder": "0-9 / A-F", "class": "form-control vitrina-slot-input"}
             ),
             "url": forms.URLInput(attrs={"placeholder": "https://...", **_WIDGET_ATTRS}),
             "observaciones": forms.Textarea(attrs={"rows": 3, **_WIDGET_ATTRS}),

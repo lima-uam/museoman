@@ -8,12 +8,30 @@
   <form method="post">
     {% csrf_token %}
     {% for field in form %}
+    {% if field.name == 'vitrina' %}
+    <div class="form-group">
+      <div style="display:flex;gap:.75rem;align-items:flex-start">
+        <div style="flex:1">
+          <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}<div class="form-errors">{{ field.errors.as_text }}</div>{% endif %}
+        </div>
+        <div>
+          <label class="form-label" for="{{ form.vitrina_slot.id_for_label }}">{{ form.vitrina_slot.label }}</label>
+          {{ form.vitrina_slot }}
+          {% if form.vitrina_slot.errors %}<div class="form-errors">{{ form.vitrina_slot.errors.as_text }}</div>{% endif %}
+        </div>
+      </div>
+    </div>
+    {% elif field.name == 'vitrina_slot' %}
+    {% else %}
     <div class="form-group">
       <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
       {{ field }}
       {% if field.errors %}<div class="form-errors">{{ field.errors.as_text }}</div>{% endif %}
       {% if field.help_text %}<small class="text-muted">{{ field.help_text }}</small>{% endif %}
     </div>
+    {% endif %}
     {% endfor %}
     <div class="flex gap-1 mt-2">
       <button type="submit" class="btn btn-primary">Guardar</button>
