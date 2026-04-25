@@ -1,6 +1,10 @@
 # Museoman
 
-Sistema de gestión de documentación de piezas del museo de la EPS UAM, mantenido por LIMA (Laboratorio de Informática y Matemáticas).
+Sistema de gestión e inventariado para la documentación de piezas del museo de la [EPS UAM](https://www.museo.eps.uam.es/), mantenido por la asociación LIMA (Laboratorio de Informática y Matemáticas).
+
+> [!NOTE]
+> Este proyecto se ha desarrollado con ayuda de herramientas de IA generativa.
+> Si encuentras algún error, por favor ábrenos una _issue_ para que podamos remediarlo.
 
 ## Requisitos
 
@@ -34,7 +38,7 @@ uv run python manage.py seed_demo
 uv run python manage.py runserver
 ```
 
-Accede en: http://127.0.0.1:8000
+Accede desde: http://127.0.0.1:8000
 
 ## Variables de entorno
 
@@ -42,7 +46,7 @@ Copia `.env.example` a `.env` y configura:
 
 | Variable | Descripción | Por defecto |
 |----------|-------------|-------------|
-| `SECRET_KEY` | Clave secreta Django — **cambiar en producción** | valor de desarrollo |
+| `SECRET_KEY` | Clave secreta Django - **cambiar en producción** | valor de desarrollo |
 | `DEBUG` | Modo debug (`True`/`False`) | `True` |
 | `ALLOWED_HOSTS` | Hosts permitidos, separados por comas | `localhost,127.0.0.1` |
 | `DATABASE_URL` | URL de conexión a la BD | SQLite local |
@@ -79,28 +83,28 @@ Los tests usan SQLite en memoria y no necesitan PostgreSQL.
 ## Arquitectura
 
 ```
-config/          ← configuración Django (settings, urls, wsgi)
+config/          -- configuración Django (settings, urls, wsgi)
 apps/
-  accounts/      ← modelo User con autenticación por email
-  catalog/       ← Tipo y Vitrina
-  items/         ← Item, ItemPhoto, máquina de estados
-  audit/         ← AuditLog + webhook Discord
-  dashboard/     ← métricas y página de información
-templates/       ← plantillas HTML (base.html + por app)
-static/          ← CSS, HTMX
-media/           ← fotos subidas (no versionado)
+  accounts/      -- modelo User con autenticación por email
+  catalog/       -- Tipo y Vitrina
+  items/         -- Item, ItemPhoto, máquina de estados
+  audit/         -- AuditLog + webhook Discord
+  dashboard/     -- métricas y página de información
+templates/       -- plantillas HTML (base.html + por app)
+static/          -- CSS, HTMX
+media/           -- fotos subidas (no versionado)
 ```
 
 ## Flujo de estados de las piezas
 
 ```
-Libre ──► Asignado ──► En revisión ──► Documentado
-  ◄──────────◄────────────◄────────────
+Libre --> Asignado --> En revisión --> Documentado
+  <----------<------------<-----------
 ```
 
-- `Libre → Asignado`: cualquier usuario (a sí mismo) o administrador (a cualquiera)
-- `Asignado → En revisión`: usuario asignado o administrador
-- `En revisión → Documentado`: sólo administrador
+- `Libre -> Asignado`: cualquier usuario (a sí mismo) o administrador (a cualquiera)
+- `Asignado -> En revisión`: usuario asignado o administrador
+- `En revisión -> Documentado`: sólo administrador
 - Revertir cualquier transición: usuario asignado o administrador
 
 ## Producción
@@ -112,8 +116,3 @@ Para producción:
 4. Ejecutar `uv run python manage.py collectstatic`
 5. Servir `staticfiles/` y `media/` vía nginx
 6. Usar gunicorn o uvicorn como servidor WSGI/ASGI
-
-## LIMA — EPS UAM
-
-Laboratorio de Informática y Matemáticas  
-Escuela Politécnica Superior — Universidad Autónoma de Madrid
