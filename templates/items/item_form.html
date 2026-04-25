@@ -2,9 +2,9 @@
 {% block title %}{{ titulo }}{% endblock %}
 
 {% block content %}
+<div style="max-width:560px;margin:0 auto">
 <h1 class="page-title">{{ titulo }}</h1>
-
-<div class="card" style="max-width:560px;margin:0 auto">
+<div class="card">
   <form method="post">
     {% csrf_token %}
     {% for field in form %}
@@ -20,6 +20,7 @@
       <a href="{% if form.instance.pk %}{% url 'items:detail' form.instance.pk %}{% else %}{% url 'items:list' %}{% endif %}" class="btn btn-secondary">Cancelar</a>
     </div>
   </form>
+</div>
 </div>
 {% endblock %}
 
