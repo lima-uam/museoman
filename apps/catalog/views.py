@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.db.models import Count, Q
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
@@ -67,6 +68,9 @@ class VitrinaListView(AdminRequiredMixin, ListView):
     model = Vitrina
     template_name = "catalog/vitrina_list.html"
     context_object_name = "vitrinas"
+
+    def get_queryset(self):
+        return Vitrina.objects.annotate(item_count=Count("items", filter=Q(items__activo=True)))
 
 
 class VitrinaCreateView(AdminRequiredMixin, CreateView):
