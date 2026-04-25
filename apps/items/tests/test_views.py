@@ -63,6 +63,7 @@ class TestItemListView:
 
     def test_filter_by_tipo(self, client_admin, item, tipo, admin_user):
         from apps.catalog.models import Tipo
+
         other_tipo = Tipo.objects.create(nombre="Monitor")
         other_item = Item.all_objects.create(nombre="Monitor VGA", created_by=admin_user)
         other_item.tipos.add(other_tipo)
@@ -73,6 +74,7 @@ class TestItemListView:
 
     def test_item_can_have_multiple_tipos(self, admin_user):
         from apps.catalog.models import Tipo
+
         t1 = Tipo.objects.create(nombre="Tipo A")
         t2 = Tipo.objects.create(nombre="Tipo B")
         obj = Item.all_objects.create(nombre="Multi", created_by=admin_user)
@@ -114,9 +116,9 @@ class TestItemCreateView:
         assert resp.status_code == 403
 
     def test_admin_can_create(self, client_admin, tipo):
-        resp = client_admin.post(reverse("items:create"), {
-            "nombre": "Nueva pieza", "tipos": [tipo.pk], "observaciones": ""
-        })
+        resp = client_admin.post(
+            reverse("items:create"), {"nombre": "Nueva pieza", "tipos": [tipo.pk], "observaciones": ""}
+        )
         assert resp.status_code == 302
         assert Item.all_objects.filter(nombre="Nueva pieza").exists()
 

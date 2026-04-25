@@ -13,7 +13,7 @@ DEBUG = os.environ.get("DEBUG", "True") == "True"
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 FORCE_SCRIPT_NAME = os.environ.get("URL_PATH", None)
 USE_X_FORWARDED_HOST = os.environ.get("USE_X_FORWARDED_HOST", None) == "True"
-CSRF_TRUSTED_ORIGINS = list(filter(None, os.environ.get("CSRF_TRUSTED_ORIGINS","").split(",")))
+CSRF_TRUSTED_ORIGINS = list(filter(None, os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",")))
 
 INSTALLED_APPS = [
     "django.contrib.admin",

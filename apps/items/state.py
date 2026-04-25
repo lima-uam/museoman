@@ -86,18 +86,14 @@ def apply_transition(item, target: str, actor, assign_to=None, url: str = ""):
         locked = item.__class__.all_objects.select_for_update().get(pk=item.pk)
 
         if not can_transition(locked, target, actor):
-            raise TransitionError(
-                f"Transición {locked.estado!r} → {target!r} no permitida para este usuario"
-            )
+            raise TransitionError(f"Transición {locked.estado!r} → {target!r} no permitida para este usuario")
 
         old_state = locked.estado
 
         if target == State.EN_REVISION:
             effective_url = url or locked.url
             if not effective_url:
-                raise TransitionError(
-                    "Debes establecer la URL antes de pasar a revisión."
-                )
+                raise TransitionError("Debes establecer la URL antes de pasar a revisión.")
             locked.url = effective_url
 
         locked.estado = target

@@ -138,6 +138,7 @@ class ItemUpdateView(LoginRequiredMixin, UpdateView):
         item = get_object_or_404(Item.all_objects, pk=kwargs["pk"])
         if not request.user.is_staff:
             from django.core.exceptions import PermissionDenied
+
             if not (item.estado == State.ASIGNADO and item.assigned_user == request.user):
                 raise PermissionDenied
         return super().dispatch(request, *args, **kwargs)

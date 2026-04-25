@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("items", "0003_remove_identificador"),
     ]
@@ -13,8 +12,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="item",
             name="url",
-            field=models.URLField(
-                blank=True, default="", max_length=500, verbose_name="URL"
-            ),
+            field=models.URLField(blank=True, default="", max_length=500, verbose_name="URL"),
         ),
     ]

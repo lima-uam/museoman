@@ -17,18 +17,21 @@ def regular_user(db):
 @pytest.fixture
 def tipo(db):
     from apps.catalog.models import Tipo
+
     return Tipo.objects.create(nombre="Ordenador")
 
 
 @pytest.fixture
 def vitrina(db):
     from apps.catalog.models import Vitrina
+
     return Vitrina.objects.create(nombre="Vitrina de prueba")
 
 
 @pytest.fixture
 def item(db, tipo, admin_user):
     from apps.items.models import Item
+
     obj = Item.all_objects.create(
         nombre="IBM PC XT",
         created_by=admin_user,

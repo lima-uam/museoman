@@ -8,7 +8,6 @@ import apps.items.models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -60,15 +59,11 @@ class Migration(migrations.Migration):
                 ("activo", models.BooleanField(default=True, verbose_name="activo")),
                 (
                     "created_at",
-                    models.DateTimeField(
-                        auto_now_add=True, verbose_name="fecha de creación"
-                    ),
+                    models.DateTimeField(auto_now_add=True, verbose_name="fecha de creación"),
                 ),
                 (
                     "updated_at",
-                    models.DateTimeField(
-                        auto_now=True, verbose_name="última modificación"
-                    ),
+                    models.DateTimeField(auto_now=True, verbose_name="última modificación"),
                 ),
                 (
                     "assigned_user",
@@ -139,9 +134,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "uploaded_at",
-                    models.DateTimeField(
-                        auto_now_add=True, verbose_name="fecha de subida"
-                    ),
+                    models.DateTimeField(auto_now_add=True, verbose_name="fecha de subida"),
                 ),
                 (
                     "item",
@@ -175,9 +168,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddIndex(
             model_name="item",
-            index=models.Index(
-                fields=["assigned_user"], name="items_item_assigne_d1eae5_idx"
-            ),
+            index=models.Index(fields=["assigned_user"], name="items_item_assigne_d1eae5_idx"),
         ),
         migrations.AddIndex(
             model_name="item",
@@ -185,9 +176,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddIndex(
             model_name="item",
-            index=models.Index(
-                fields=["vitrina"], name="items_item_vitrina_73830e_idx"
-            ),
+            index=models.Index(fields=["vitrina"], name="items_item_vitrina_73830e_idx"),
         ),
         migrations.AddIndex(
             model_name="item",

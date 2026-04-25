@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("catalog", "0002_vitrina_add_nombre_auto_numero"),
     ]
@@ -13,8 +12,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="vitrina",
             name="url",
-            field=models.URLField(
-                blank=True, default="", max_length=500, verbose_name="URL"
-            ),
+            field=models.URLField(blank=True, default="", max_length=500, verbose_name="URL"),
         ),
     ]

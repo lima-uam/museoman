@@ -27,6 +27,7 @@ class TestStateMachine:
         apply_transition(item, State.ASIGNADO, regular_user, assign_to=regular_user)
         assert can_transition(item, State.EN_REVISION, regular_user)
         from django.contrib.auth import get_user_model
+
         User = get_user_model()
         other = User.objects.create_user(email="other@test.com", name="Other", password="pass")
         assert not can_transition(item, State.EN_REVISION, other)
@@ -70,6 +71,7 @@ class TestStateMachine:
 
     def test_transition_creates_audit_log(self, item, regular_user):
         from apps.audit.models import AuditLog
+
         apply_transition(item, State.ASIGNADO, regular_user, assign_to=regular_user)
         log = AuditLog.objects.filter(item=item, action=AuditLog.ACTION_STATE_CHANGE).first()
         assert log is not None

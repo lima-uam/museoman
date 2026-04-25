@@ -2,7 +2,6 @@ import os
 
 from django import forms
 from django.conf import settings
-
 from django.contrib.auth import get_user_model
 
 from apps.catalog.models import Tipo, Vitrina

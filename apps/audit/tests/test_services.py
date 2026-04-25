@@ -1,6 +1,7 @@
+from unittest.mock import patch
+
 import pytest
 import responses as responses_lib
-from unittest.mock import patch
 
 from apps.audit.models import AuditLog
 from apps.audit.services import record
@@ -8,9 +9,11 @@ from apps.audit.services import record
 
 class _SyncThread:
     """Runs target immediately on start() — makes Discord calls synchronous in tests."""
+
     def __init__(self, target, args=(), daemon=False, **kwargs):
         self._target = target
         self._args = args
+
     def start(self):
         self._target(*self._args)
 

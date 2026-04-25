@@ -11,6 +11,7 @@ from .models import Tipo, Vitrina
 
 # ── Tipos ──────────────────────────────────────────────────────────────────
 
+
 class TipoListView(AdminRequiredMixin, ListView):
     model = Tipo
     template_name = "catalog/tipo_list.html"
@@ -61,6 +62,7 @@ class TipoDeleteView(AdminRequiredMixin, DeleteView):
 
 # ── Vitrinas ───────────────────────────────────────────────────────────────
 
+
 class VitrinaListView(AdminRequiredMixin, ListView):
     model = Vitrina
     template_name = "catalog/vitrina_list.html"
@@ -109,7 +111,11 @@ class VitrinaDeleteView(AdminRequiredMixin, DeleteView):
     success_url = reverse_lazy("catalog:vitrina_list")
 
     def form_valid(self, form):
-        record_vitrina(AuditLog.ACTION_VITRINA_DELETED, self.object, self.request.user,
-                       payload={"nombre": self.object.nombre, "pk": self.object.pk})
+        record_vitrina(
+            AuditLog.ACTION_VITRINA_DELETED,
+            self.object,
+            self.request.user,
+            payload={"nombre": self.object.nombre, "pk": self.object.pk},
+        )
         messages.success(self.request, "Vitrina eliminada.")
         return super().form_valid(form)

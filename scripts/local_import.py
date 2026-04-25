@@ -69,7 +69,9 @@ def main():
     parser = argparse.ArgumentParser(description="Import items from a local directory into Museoman")
     parser.add_argument("path", help="Directory: each subdirectory = one item")
     parser.add_argument(
-        "--url", default="http://localhost:8000", metavar="URL",
+        "--url",
+        default="http://localhost:8000",
+        metavar="URL",
         help="Museoman base URL (default: http://localhost:8000)",
     )
     parser.add_argument("--email", required=True, help="Staff user email")
@@ -107,10 +109,7 @@ def main():
             continue
         created_items += 1
 
-        image_files = sorted(
-            f for f in subdir.iterdir()
-            if f.is_file() and f.suffix.lower() in IMAGE_EXTENSIONS
-        )
+        image_files = sorted(f for f in subdir.iterdir() if f.is_file() and f.suffix.lower() in IMAGE_EXTENSIONS)
 
         for img_path in image_files:
             if not upload_photo(session, base, item_pk, img_path):

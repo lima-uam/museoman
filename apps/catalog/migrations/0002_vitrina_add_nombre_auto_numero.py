@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("catalog", "0001_initial"),
     ]
@@ -13,8 +12,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="vitrina",
             name="nombre",
-            field=models.CharField(
-                blank=True, default="", max_length=100, verbose_name="nombre"
-            ),
+            field=models.CharField(blank=True, default="", max_length=100, verbose_name="nombre"),
         ),
     ]

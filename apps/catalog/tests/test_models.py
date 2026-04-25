@@ -12,6 +12,7 @@ class TestTipo:
     def test_nombre_unique(self):
         Tipo.objects.create(nombre="Monitor")
         from django.db import IntegrityError
+
         with pytest.raises(IntegrityError):
             Tipo.objects.create(nombre="Monitor")
 

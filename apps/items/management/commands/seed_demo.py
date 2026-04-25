@@ -49,7 +49,7 @@ class Command(BaseCommand):
         demo_items = [
             ("IBM PC XT 5160", tipos[0], vitrinas[0]),
             ("Disco duro IBM 20MB", tipos[1], vitrinas[0]),
-            ("Monitor VGA 14\"", tipos[2], vitrinas[1]),
+            ('Monitor VGA 14"', tipos[2], vitrinas[1]),
             ("Teclado PS/2 IBM", tipos[3], None),
             ("Commodore 64", tipos[0], vitrinas[2]),
         ]

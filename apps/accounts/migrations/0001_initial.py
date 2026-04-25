@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -27,9 +26,7 @@ class Migration(migrations.Migration):
                 ("password", models.CharField(max_length=128, verbose_name="password")),
                 (
                     "last_login",
-                    models.DateTimeField(
-                        blank=True, null=True, verbose_name="last login"
-                    ),
+                    models.DateTimeField(blank=True, null=True, verbose_name="last login"),
                 ),
                 (
                     "is_superuser",
@@ -41,9 +38,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "email",
-                    models.EmailField(
-                        max_length=254, unique=True, verbose_name="correo electrónico"
-                    ),
+                    models.EmailField(max_length=254, unique=True, verbose_name="correo electrónico"),
                 ),
                 ("name", models.CharField(max_length=150, verbose_name="nombre")),
                 ("is_active", models.BooleanField(default=True, verbose_name="activo")),
@@ -53,9 +48,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "date_joined",
-                    models.DateTimeField(
-                        auto_now_add=True, verbose_name="fecha de alta"
-                    ),
+                    models.DateTimeField(auto_now_add=True, verbose_name="fecha de alta"),
                 ),
                 (
                     "groups",

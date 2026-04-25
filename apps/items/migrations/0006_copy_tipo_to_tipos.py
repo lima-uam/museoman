@@ -10,7 +10,6 @@ def copy_tipo_to_tipos(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("items", "0005_add_tipos_m2m"),
     ]

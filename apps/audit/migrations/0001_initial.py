@@ -6,7 +6,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -44,15 +43,11 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "from_state",
-                    models.CharField(
-                        blank=True, max_length=30, verbose_name="estado anterior"
-                    ),
+                    models.CharField(blank=True, max_length=30, verbose_name="estado anterior"),
                 ),
                 (
                     "to_state",
-                    models.CharField(
-                        blank=True, max_length=30, verbose_name="estado nuevo"
-                    ),
+                    models.CharField(blank=True, max_length=30, verbose_name="estado nuevo"),
                 ),
                 (
                     "payload",
