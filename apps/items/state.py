@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 
@@ -65,6 +66,23 @@ def _check_permission(current: str, target: str, item, user) -> bool:
     return False
 
 
+def get_active_assignment_count(user) -> int:
+    """Count active items assigned to user that are not documentado."""
+    from apps.items.models import Item
+
+    return Item.objects.filter(assigned_user=user, activo=True).exclude(estado=State.DOCUMENTADO).count()
+
+
+def is_at_assignment_limit(user) -> bool:
+    """Return True if user has reached the assignment limit. Staff always return False."""
+    if user.is_staff:
+        return False
+    limit = getattr(settings, "ITEM_ASSIGNMENT_LIMIT", 5)
+    if limit == 0:
+        return False
+    return get_active_assignment_count(user) >= limit
+
+
 def apply_transition(item, target: str, actor, assign_to=None, url: str = ""):
     """
     Apply a state transition atomically.
@@ -87,6 +105,15 @@ def apply_transition(item, target: str, actor, assign_to=None, url: str = ""):
 
         if not can_transition(locked, target, actor):
             raise TransitionError(f"Transición {locked.estado!r} → {target!r} no permitida para este usuario")
+
+        if target == State.ASIGNADO:
+            effective_assign_to = assign_to if assign_to is not None else actor
+            if is_at_assignment_limit(effective_assign_to):
+                limit = getattr(settings, "ITEM_ASSIGNMENT_LIMIT", 5)
+                raise TransitionError(
+                    f"{effective_assign_to.name} ya tiene {limit} piezas activas sin documentar "
+                    f"(límite máximo). Documenta alguna antes de asumir más."
+                )
 
         old_state = locked.estado
 

@@ -104,6 +104,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Discord webhook (optional)
 DISCORD_WEBHOOK_URL = os.environ.get("DISCORD_WEBHOOK_URL", "")
 
+# Max concurrent non-documentado items per regular user (0 = unlimited)
+ITEM_ASSIGNMENT_LIMIT = int(os.environ.get("ITEM_ASSIGNMENT_LIMIT", "5"))
+
 # File upload limits (5 MB)
 MAX_UPLOAD_SIZE = 5 * 1024 * 1024
 ALLOWED_IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".png", ".gif", ".webp"]

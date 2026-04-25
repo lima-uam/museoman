@@ -25,6 +25,21 @@ class TestDashboardView:
 
 
 @pytest.mark.django_db
+class TestAboutAssignmentLimit:
+    def test_limit_sentence_shown(self, settings):
+        settings.ITEM_ASSIGNMENT_LIMIT = 5
+        c = Client()
+        resp = c.get(reverse("about"))
+        assert b"5 piezas pendientes" in resp.content
+
+    def test_unlimited_sentence_shown(self, settings):
+        settings.ITEM_ASSIGNMENT_LIMIT = 0
+        c = Client()
+        resp = c.get(reverse("about"))
+        assert b"No hay l" in resp.content  # "No hay límite..."
+
+
+@pytest.mark.django_db
 class TestAboutView:
     def test_accessible_without_login(self):
         c = Client()

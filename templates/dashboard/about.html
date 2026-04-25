@@ -65,9 +65,12 @@
       <hr class="separator">
       <h3 style="font-size:.9rem;margin:0 0 .5rem;color:var(--clr-muted)">¿Quieres ayudarnos? ¡Apúntate!</h3>
       <ul style="margin:0;padding-left:1.2rem;font-size:.9rem;line-height:2">
-        <a href="https://lima.sh/link/unirse">Únete a nuestra asociación</a> y contacta con nosotros en 
+        <a href="https://lima.sh/link/unirse">Únete a nuestra asociación</a> y contacta con nosotros en
         <a href="https://lima.sh/link/discord">discord</a>.
       </ul>
+      <p class="text-muted" style="font-size:.82rem;margin:1rem 0 0">
+        {% if assignment_limit %}Cada colaborador puede tener asignadas hasta {{ assignment_limit }} piezas pendientes de documentar simultáneamente.{% else %}No hay límite de piezas asignadas por colaborador.{% endif %}
+      </p>
     </div>
 
     <div class="card">
