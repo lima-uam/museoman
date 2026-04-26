@@ -218,6 +218,39 @@ class Command(BaseCommand):
                 item.save(update_fields=["activo"])
                 record(AuditLog.ACTION_DEACTIVATED, item, admin)
 
+        # ── High-churn item for pagination testing ─────────────────────────
+        churn, created = Item.all_objects.get_or_create(
+            nombre="Unidad de cinta IBM 3420 (alta actividad)",
+            defaults={"created_by": admin, "observaciones": "Pieza con historial extenso.", "vitrina": vitrinas[0]},
+        )
+        if created:
+            churn.tipos.add(tipos[0])
+            record(AuditLog.ACTION_CREATED, churn, admin)
+            obs_cycle = [
+                "Pendiente de revision.",
+                "Cables comprobados.",
+                "Mecanismo de carga verificado.",
+                "Limpieza completada.",
+                "Etiquetado actualizado.",
+                "Ubicacion cambiada a Sala B.",
+                "Documentacion fotografica pendiente.",
+                "Referencia cruzada con catalogo IBM.",
+            ]
+            for i, obs in enumerate(obs_cycle * 5):
+                volunteer = volunteers[i % len(volunteers)]
+                old = {
+                    "nombre": churn.nombre,
+                    "observaciones": churn.observaciones or "",
+                    "url": str(churn.url or ""),
+                    "vitrina_slot": churn.vitrina_slot or "",
+                    "vitrina": churn.vitrina.nombre if churn.vitrina else "",
+                    "tipos": ", ".join(sorted(churn.tipos.values_list("nombre", flat=True))),
+                }
+                churn.observaciones = obs
+                churn.save(update_fields=["observaciones"])
+                record_field_changes(churn, volunteer, old, dict(old, observaciones=obs))
+            self.stdout.write(f"Pieza de alta actividad creada: pk={churn.pk}")
+
         # ── Ensure at least a few items stay libre and some are inactive ──
         # (covered by the fate distribution above)
 
