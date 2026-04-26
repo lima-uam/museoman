@@ -118,14 +118,11 @@ def _build_discord_embed(log: AuditLog) -> dict:
     fields = [
         {"name": "Accion", "value": log.get_action_display(), "inline": True},
         {"name": "Por", "value": actor_name, "inline": True},
+        {"name": "​", "value": "​", "inline": True},
+        {"name": "Campo", "value": log.field or "-", "inline": True},
+        {"name": "Antes", "value": log.from_state or "-", "inline": True},
+        {"name": "Despues", "value": log.to_state or "-", "inline": True},
     ]
-
-    if log.field:
-        fields.append({"name": "Campo", "value": log.field, "inline": False})
-    if log.from_state:
-        fields.append({"name": "Antes", "value": log.from_state, "inline": True})
-    if log.to_state:
-        fields.append({"name": "Despues", "value": log.to_state, "inline": True})
 
     return {
         "title": title,

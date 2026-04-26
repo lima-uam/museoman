@@ -72,6 +72,24 @@ class TestAuditRecord:
         assert "Campo" in field_names
         assert "Antes" in field_names
         assert "Despues" in field_names
+        campo = next(f for f in embed["fields"] if f["name"] == "Campo")
+        assert campo["value"] == "nombre"
+
+    @responses_lib.activate
+    def test_discord_embed_consistent_layout_when_no_field(self, item, admin_user, settings):
+        url = "https://discord.com/api/webhooks/test/token"
+        settings.DISCORD_WEBHOOK_URL = url
+        responses_lib.add(responses_lib.POST, url, json={}, status=200)
+
+        with patch("apps.audit.services.threading.Thread", _SyncThread):
+            record(AuditLog.ACTION_STATE_CHANGE, item, admin_user, from_state="Libre", to_state="Asignado")
+
+        body = json.loads(responses_lib.calls[0].request.body)
+        embed = body["embeds"][0]
+        field_names = [f["name"] for f in embed["fields"] if f["name"] not in ("", "​")]
+        assert field_names == ["Accion", "Por", "Campo", "Antes", "Despues"]
+        campo = next(f for f in embed["fields"] if f["name"] == "Campo")
+        assert campo["value"] == "-"
 
 
 @pytest.mark.django_db
