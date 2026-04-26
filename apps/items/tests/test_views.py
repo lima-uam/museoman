@@ -155,6 +155,25 @@ class TestItemDetailView:
         assert 'class="photo-open"' in content
         assert 'target="_blank"' not in content
 
+    def test_audit_table_rendered_after_update(self, client_admin, item, tipo):
+        client_admin.post(
+            reverse("items:update", kwargs={"pk": item.pk}),
+            {"nombre": "Nombre Cambiado", "tipos": [tipo.pk], "observaciones": "", "url": ""},
+        )
+        resp = client_admin.get(reverse("items:detail", kwargs={"pk": item.pk}))
+        content = resp.content.decode()
+        assert "Antes" in content
+        assert "Despues" in content
+        assert "nombre" in content
+
+    def test_audit_badge_class_present(self, client_admin, item, tipo):
+        client_admin.post(
+            reverse("items:update", kwargs={"pk": item.pk}),
+            {"nombre": "Otro", "tipos": [tipo.pk], "observaciones": "", "url": ""},
+        )
+        resp = client_admin.get(reverse("items:detail", kwargs={"pk": item.pk}))
+        assert b"audit-badge-updated" in resp.content
+
 
 @pytest.mark.django_db
 class TestItemCreateView:
