@@ -141,8 +141,8 @@ def apply_transition(item, target: str, actor, assign_to=None, url: str = ""):
             AuditLog.ACTION_STATE_CHANGE,
             locked,
             actor,
-            from_state=old_state,
-            to_state=target,
+            from_state=State(old_state).label,
+            to_state=State(target).label,
         )
 
     # Refresh original object so caller sees new state

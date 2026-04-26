@@ -76,8 +76,8 @@ class TestStateMachine:
         apply_transition(item, State.ASIGNADO, regular_user, assign_to=regular_user)
         log = AuditLog.objects.filter(item=item, action=AuditLog.ACTION_STATE_CHANGE).first()
         assert log is not None
-        assert log.from_state == State.LIBRE
-        assert log.to_state == State.ASIGNADO
+        assert log.from_state == State.LIBRE.label
+        assert log.to_state == State.ASIGNADO.label
 
     def test_invalid_transition_raises(self, item, regular_user):
         with pytest.raises(TransitionError):

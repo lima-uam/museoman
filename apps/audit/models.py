@@ -53,8 +53,9 @@ class AuditLog(models.Model):
         verbose_name="usuario",
     )
     action = models.CharField(max_length=30, choices=ACTION_CHOICES, verbose_name="acción")
-    from_state = models.CharField(max_length=30, blank=True, verbose_name="estado anterior")
-    to_state = models.CharField(max_length=30, blank=True, verbose_name="estado nuevo")
+    field = models.CharField(max_length=64, blank=True, default="", verbose_name="campo")
+    from_state = models.CharField(max_length=255, blank=True, verbose_name="valor anterior")
+    to_state = models.CharField(max_length=255, blank=True, verbose_name="valor nuevo")
     payload = models.JSONField(default=dict, blank=True, verbose_name="datos")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="fecha")
 
