@@ -1,5 +1,15 @@
 # CLAUDE.md — Museoman
 
+## Instructions for Claude
+
+**MUST follow these at all times, no exceptions:**
+
+1. **Brevity:** Zero filler, zero greetings, zero unsolicited suggestions. Say what needs to be said and stop. Every sentence must earn its place.
+2. **Characters:** No em-dashes, arrows, or decorative special characters in code or docs. Plain ASCII punctuation only (language letters and diacritics always allowed).
+3. **File reads:** Read a file before writing it. Do not re-read unless it has changed since the last read.
+
+---
+
 Documentation management system for the EPS UAM museum, maintained by the LIMA student association (Laboratorio de Informática y Matemáticas, Universidad Autónoma de Madrid).
 
 ---
@@ -179,22 +189,3 @@ Test settings: `config/test_settings.py`. Fixtures in `conftest.py` (root): `adm
 
 Low concurrency expected. Prioritise data consistency (hence `select_for_update()` on state transitions) and simplicity over performance. Lightweight — no heavy JS, no caching layer needed.
 
----
-
-## Known pre-existing lint issues (not to fix)
-
-Two `I001` (unsorted imports) in `apps/audit/tests/test_services.py` and `apps/items/forms.py`. These predate the current session and are not blocking.
-
----
-
-## Spec deviations / decisions made
-
-| Spec | Actual |
-|---|---|
-| `identificador` field on Item | Removed — Django pk used instead |
-| `numero` field on Vitrina | Removed — Django pk used instead |
-| Single `tipo` FK on Item | Replaced with `tipos` M2M |
-| Any user can revert states | Revert from `en_revision` and `documentado` is staff-only |
-| URL field not in spec | Added — required to advance to `en_revision` |
-| Audit log only for state changes | Extended to item create/update and all vitrina operations |
-| "Unread comments" filter | Not implemented — no comments feature |
