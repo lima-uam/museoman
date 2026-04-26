@@ -100,6 +100,7 @@ class ItemDetailView(LoginRequiredMixin, DetailView):
         ctx["prev_state"] = BACKWARD.get(item.estado)
         ctx["audit_logs"] = item.audit_logs.select_related("actor").order_by("-created_at")[:20]
         ctx["photos"] = item.photos.all()
+        ctx["photo_urls"] = [p.image.url for p in ctx["photos"]]
         ctx["photo_form"] = PhotoUploadForm()
         ctx["State"] = State
         ctx["users"] = User.objects.filter(is_active=True).order_by("name") if user.is_staff else None

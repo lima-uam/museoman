@@ -230,6 +230,26 @@ tr:hover td { background: #f1f3f5; }
 #item-thumb-preview img { width: 100%; height: 100%; object-fit: contain; background: #000; display: block; }
 #item-thumb-preview .counter { position: absolute; bottom: 6px; right: 8px; background: rgba(0,0,0,.55); color: #fff; font-size: .72rem; padding: .1rem .4rem; border-radius: 20px; line-height: 1.4; }
 
+/* ── Photo viewer modal ── */
+.photo-open { background: none; border: none; padding: 0; cursor: zoom-in; display: block; }
+body.pv-open { overflow: hidden; }
+#photo-viewer { position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,.85); display: flex; align-items: center; justify-content: center; }
+#photo-viewer[hidden] { display: none; }
+.pv-stage { display: flex; align-items: center; justify-content: center; max-width: 92vw; max-height: 88vh; overflow: hidden; cursor: zoom-in; }
+.pv-stage img { max-width: 92vw; max-height: 88vh; object-fit: contain; display: block; user-select: none; }
+.pv-stage.zoomed { position: fixed; inset: 5rem 5rem 4rem 5rem; max-width: calc(100vw - 3rem); max-height: calc(100vh - 3rem); cursor: zoom-out; }
+.pv-stage.zoomed img { max-width: calc(100vw - 3rem); max-height: calc(100vh - 3rem); }
+.pv-close, .pv-prev, .pv-next { position: fixed; background: rgba(255,255,255,.12); border: none; color: #fff; cursor: pointer; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: background .15s; }
+.pv-close:hover, .pv-prev:hover, .pv-next:hover { background: rgba(255,255,255,.28); }
+.pv-close { top: 1rem; right: 1rem; width: 2.5rem; height: 2.5rem; font-size: 1.4rem; line-height: 1; }
+.pv-prev, .pv-next { top: 50%; transform: translateY(-50%); width: 3rem; height: 3rem; font-size: 2rem; line-height: 1; }
+.pv-prev { left: 1rem; }
+.pv-next { right: 1rem; }
+.pv-counter { position: fixed; bottom: 1rem; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,.45); color: #fff; font-size: .8rem; padding: .2rem .7rem; border-radius: 20px; pointer-events: none; }
+#photo-viewer[data-count="1"] .pv-prev,
+#photo-viewer[data-count="1"] .pv-next,
+#photo-viewer[data-count="1"] .pv-counter { display: none; }
+
 /* ── Audit log ── */
 .audit-list { list-style: none; padding: 0; margin: 0; }
 .audit-list li { padding: .4rem 0; border-bottom: 1px solid var(--clr-border); font-size: .85rem; display: flex; justify-content: space-between; gap: 1rem; }

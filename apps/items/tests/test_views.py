@@ -130,6 +130,31 @@ class TestItemDetailView:
         resp = client_admin.get(reverse("items:detail", kwargs={"pk": item.pk}))
         assert resp.status_code == 200
 
+    def test_detail_renders_photo_viewer_when_photos_exist(self, client_admin, item, admin_user):
+        from apps.items.models import ItemPhoto
+
+        ItemPhoto.objects.create(item=item, image="items/1/test.jpg", uploaded_by=admin_user)
+        resp = client_admin.get(reverse("items:detail", kwargs={"pk": item.pk}))
+        content = resp.content.decode()
+        assert 'id="photo-viewer"' in content
+        assert 'id="photo-viewer-data"' in content
+        assert "items/1/test.jpg" in content
+
+    def test_detail_photo_viewer_empty_when_no_photos(self, client_admin, item):
+        resp = client_admin.get(reverse("items:detail", kwargs={"pk": item.pk}))
+        content = resp.content.decode()
+        assert 'id="photo-viewer-data"' in content
+        assert "[]" in content
+
+    def test_detail_photo_button_replaces_link(self, client_admin, item, admin_user):
+        from apps.items.models import ItemPhoto
+
+        ItemPhoto.objects.create(item=item, image="items/1/test.jpg", uploaded_by=admin_user)
+        resp = client_admin.get(reverse("items:detail", kwargs={"pk": item.pk}))
+        content = resp.content.decode()
+        assert 'class="photo-open"' in content
+        assert 'target="_blank"' not in content
+
 
 @pytest.mark.django_db
 class TestItemCreateView:

@@ -26,11 +26,12 @@
   <div class="photo-grid">
     {% for photo in photos %}
     <div class="photo-item">
-      <a href="{{ photo.image.url }}" target="_blank">
+      <button type="button" class="photo-open" data-photo-index="{{ forloop.counter0 }}">
         <img src="{{ photo.image.url }}" alt="Foto {{ forloop.counter }}">
-      </a>
+      </button>
       {% if user.is_staff %}
-      <form method="post" action="{% url 'items:photo_delete' item.pk photo.pk %}">
+      <form method="post" action="{% url 'items:photo_delete' item.pk photo.pk %}"
+            onclick="event.stopPropagation()">
         {% csrf_token %}
         <button class="photo-delete" title="Eliminar foto" onclick="return confirm('¿Eliminar esta foto?')">×</button>
       </form>
@@ -88,4 +89,111 @@
 <div class="mt-2">
   <a href="{% url 'items:list' %}" class="btn btn-outline btn-sm">← Volver al listado</a>
 </div>
+
+<!-- Photo viewer modal -->
+<div id="photo-viewer" hidden>
+  <button class="pv-close" aria-label="Cerrar">×</button>
+  <button class="pv-prev" aria-label="Anterior">&#8249;</button>
+  <button class="pv-next" aria-label="Siguiente">&#8250;</button>
+  <div class="pv-stage"><img alt=""></div>
+  <div class="pv-counter"></div>
+</div>
+{{ photo_urls|json_script:"photo-viewer-data" }}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+  var dataEl = document.getElementById('photo-viewer-data');
+  if (!dataEl) return;
+  var urls = JSON.parse(dataEl.textContent);
+  if (!urls.length) return;
+
+  var viewer   = document.getElementById('photo-viewer');
+  var stage    = viewer.querySelector('.pv-stage');
+  var img      = viewer.querySelector('.pv-stage img');
+  var counter  = viewer.querySelector('.pv-counter');
+  var btnPrev  = viewer.querySelector('.pv-prev');
+  var btnNext  = viewer.querySelector('.pv-next');
+  var btnClose = viewer.querySelector('.pv-close');
+  var current  = 0;
+  var single   = urls.length === 1;
+
+  if (single) {
+    viewer.setAttribute('data-count', '1');
+  }
+
+  function resetZoom() {
+    stage.classList.remove('zoomed');
+    img.style.transform = '';
+    img.style.transformOrigin = '';
+  }
+
+  function setFrame(i) {
+    img.src = urls[i];
+    resetZoom();
+    if (!single) {
+      counter.textContent = (i + 1) + ' / ' + urls.length;
+    }
+    current = i;
+  }
+
+  function openViewer(i) {
+    setFrame(i);
+    viewer.removeAttribute('hidden');
+    document.body.classList.add('pv-open');
+  }
+
+  function closeViewer() {
+    viewer.setAttribute('hidden', '');
+    document.body.classList.remove('pv-open');
+    resetZoom();
+  }
+
+  function step(delta) {
+    setFrame((current + delta + urls.length) % urls.length);
+  }
+
+  document.querySelectorAll('.photo-open').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      openViewer(parseInt(btn.dataset.photoIndex, 10));
+    });
+  });
+
+  btnPrev.addEventListener('click', function () { step(-1); });
+  btnNext.addEventListener('click', function () { step(1); });
+  btnClose.addEventListener('click', closeViewer);
+
+  viewer.addEventListener('click', function (e) {
+    if (e.target === viewer) closeViewer();
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (viewer.hasAttribute('hidden')) return;
+    if (e.key === 'Escape')     closeViewer();
+    if (!single && e.key === 'ArrowLeft')  step(-1);
+    if (!single && e.key === 'ArrowRight') step(1);
+  });
+
+  stage.addEventListener('click', function (e) {
+    if (e.target === img || e.target === stage) {
+      if (stage.classList.contains('zoomed')) {
+        resetZoom();
+      } else {
+        stage.classList.add('zoomed');
+        img.style.transformOrigin = '50% 50%';
+        img.style.transform = 'scale(3)';
+      }
+    }
+  });
+
+  stage.addEventListener('mousemove', function (e) {
+    if (!stage.classList.contains('zoomed')) return;
+    var rect = stage.getBoundingClientRect();
+    var x = ((e.clientX - rect.left) / rect.width  * 100).toFixed(1);
+    var y = ((e.clientY - rect.top)  / rect.height * 100).toFixed(1);
+    img.style.transformOrigin = x + '% ' + y + '%';
+  });
+})();
+</script>
 {% endblock %}
