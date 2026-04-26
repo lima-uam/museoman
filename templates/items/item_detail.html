@@ -64,36 +64,8 @@
 </div>
 
 <!-- Audit log -->
-<div class="card mt-2">
-  <div class="card-header">Historial</div>
-  {% if audit_logs %}
-  <table class="audit-table">
-    <thead>
-      <tr>
-        <th>Fecha</th>
-        <th>Accion</th>
-        <th>Campo</th>
-        <th>Antes</th>
-        <th>Despues</th>
-        <th>Usuario</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for log in audit_logs %}
-      <tr>
-        <td class="audit-meta">{{ log.created_at|date:"d/m/Y H:i" }}</td>
-        <td><span class="audit-badge audit-badge-{{ log.action }}">{{ log.get_action_display }}</span></td>
-        <td>{{ log.field|default:"" }}</td>
-        <td>{% if log.from_state %}<s class="audit-old">{{ log.from_state }}</s>{% endif %}</td>
-        <td>{% if log.to_state %}<strong class="audit-new">{{ log.to_state }}</strong>{% endif %}</td>
-        <td>{{ log.actor.name|default:"" }}</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-  {% else %}
-  <p class="text-muted" style="margin:0">Sin actividad registrada.</p>
-  {% endif %}
+<div class="mt-2">
+  <a href="{% url 'items:audit_log' item.pk %}" class="btn btn-outline btn-sm">Ver historial</a>
 </div>
 
 <div class="mt-2">

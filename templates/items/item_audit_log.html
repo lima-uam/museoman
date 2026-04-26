@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load items_tags %}
+{% block title %}Historial - {{ item.nombre }}{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center gap-2 mb-2">
+  <h2 style="margin:0">Historial: {{ item.nombre }}</h2>
+  <a href="{% url 'items:detail' item.pk %}" class="btn btn-outline btn-sm">← Volver a la pieza</a>
+</div>
+
+<div class="card">
+  {% if page_obj.object_list %}
+  <table class="audit-table">
+    <thead>
+      <tr>
+        <th>Fecha</th>
+        <th>Accion</th>
+        <th>Campo</th>
+        <th>Antes</th>
+        <th>Despues</th>
+        <th>Usuario</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for log in page_obj %}
+      <tr>
+        <td class="audit-meta">{{ log.created_at|date:"d/m/Y H:i" }}</td>
+        <td><span class="audit-badge audit-badge-{{ log.action }}">{{ log.get_action_display }}</span></td>
+        <td>{{ log.field|default:"" }}</td>
+        <td>{% if log.from_state %}<s class="audit-old">{{ log.from_state }}</s>{% endif %}</td>
+        <td>{% if log.to_state %}<strong class="audit-new">{{ log.to_state }}</strong>{% endif %}</td>
+        <td>{{ log.actor.name|default:"" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% if page_obj.has_other_pages %}
+  <div class="d-flex align-items-center gap-2" style="padding:.6rem 1rem;border-top:1px solid var(--clr-border)">
+    {% if page_obj.has_previous %}
+    <a href="?{% url_replace 'page' page_obj.previous_page_number %}" class="btn btn-sm btn-outline">Anterior</a>
+    {% endif %}
+    <span class="text-muted" style="font-size:.85rem">
+      Pagina {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+      ({{ page_obj.paginator.count }} entradas)
+    </span>
+    {% if page_obj.has_next %}
+    <a href="?{% url_replace 'page' page_obj.next_page_number %}" class="btn btn-sm btn-outline">Siguiente</a>
+    {% endif %}
+  </div>
+  {% endif %}
+  {% else %}
+  <p class="text-muted" style="margin:0;padding:1rem">Sin actividad registrada.</p>
+  {% endif %}
+</div>
+{% endblock %}

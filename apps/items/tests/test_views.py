@@ -155,24 +155,50 @@ class TestItemDetailView:
         assert 'class="photo-open"' in content
         assert 'target="_blank"' not in content
 
-    def test_audit_table_rendered_after_update(self, client_admin, item, tipo):
+    def test_detail_links_to_audit_log(self, client_admin, item):
+        resp = client_admin.get(reverse("items:detail", kwargs={"pk": item.pk}))
+        assert b"historial" in resp.content
+
+
+@pytest.mark.django_db
+class TestItemAuditLogView:
+    def test_requires_login(self, item):
+        c = Client()
+        resp = c.get(reverse("items:audit_log", kwargs={"pk": item.pk}))
+        assert resp.status_code == 302
+
+    def test_renders_audit_table(self, client_admin, item, tipo):
         client_admin.post(
             reverse("items:update", kwargs={"pk": item.pk}),
             {"nombre": "Nombre Cambiado", "tipos": [tipo.pk], "observaciones": "", "url": ""},
         )
-        resp = client_admin.get(reverse("items:detail", kwargs={"pk": item.pk}))
+        resp = client_admin.get(reverse("items:audit_log", kwargs={"pk": item.pk}))
         content = resp.content.decode()
+        assert resp.status_code == 200
         assert "Antes" in content
         assert "Despues" in content
         assert "nombre" in content
+        assert "audit-badge-updated" in content
 
-    def test_audit_badge_class_present(self, client_admin, item, tipo):
-        client_admin.post(
-            reverse("items:update", kwargs={"pk": item.pk}),
-            {"nombre": "Otro", "tipos": [tipo.pk], "observaciones": "", "url": ""},
-        )
-        resp = client_admin.get(reverse("items:detail", kwargs={"pk": item.pk}))
-        assert b"audit-badge-updated" in resp.content
+    def test_pagination(self, client_admin, item, admin_user):
+        from apps.audit.models import AuditLog
+
+        for i in range(30):
+            AuditLog.objects.create(item=item, actor=admin_user, action=AuditLog.ACTION_UPDATED, field=f"f{i}")
+        resp = client_admin.get(reverse("items:audit_log", kwargs={"pk": item.pk}))
+        assert resp.status_code == 200
+        page_obj = resp.context["page_obj"]
+        assert page_obj.paginator.num_pages > 1
+        assert len(page_obj.object_list) == 25
+
+    def test_second_page_accessible(self, client_admin, item, admin_user):
+        from apps.audit.models import AuditLog
+
+        for i in range(30):
+            AuditLog.objects.create(item=item, actor=admin_user, action=AuditLog.ACTION_UPDATED, field=f"f{i}")
+        resp = client_admin.get(reverse("items:audit_log", kwargs={"pk": item.pk}) + "?page=2")
+        assert resp.status_code == 200
+        assert len(resp.context["page_obj"].object_list) == 5
 
 
 @pytest.mark.django_db

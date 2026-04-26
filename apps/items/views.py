@@ -98,7 +98,6 @@ class ItemDetailView(LoginRequiredMixin, DetailView):
         ctx["can_revert"] = can_revert(item, user)
         ctx["next_state"] = FORWARD.get(item.estado)
         ctx["prev_state"] = BACKWARD.get(item.estado)
-        ctx["audit_logs"] = item.audit_logs.select_related("actor").order_by("-created_at")[:20]
         ctx["photos"] = item.photos.all()
         ctx["photo_urls"] = [p.image.url for p in ctx["photos"]]
         ctx["photo_form"] = PhotoUploadForm()
@@ -260,6 +259,18 @@ class ItemDeactivateView(AdminRequiredMixin, View):
         state = "activada" if item.activo else "desactivada"
         messages.success(request, f"Pieza {state}.")
         return redirect("items:detail", pk=pk)
+
+
+class ItemAuditLogView(LoginRequiredMixin, View):
+    template_name = "items/item_audit_log.html"
+    paginate_by = 25
+
+    def get(self, request, pk):
+        item = get_object_or_404(Item.all_objects, pk=pk)
+        qs = item.audit_logs.select_related("actor").order_by("-created_at")
+        paginator = Paginator(qs, self.paginate_by)
+        page_obj = paginator.get_page(request.GET.get("page"))
+        return render(request, self.template_name, {"item": item, "page_obj": page_obj})
 
 
 class PhotoUploadView(AdminRequiredMixin, View):
