@@ -5,7 +5,7 @@ from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
 from apps.accounts.mixins import AdminRequiredMixin
 from apps.audit.models import AuditLog
-from apps.audit.services import record_vitrina
+from apps.audit.services import record_vitrina, record_vitrina_field_changes
 
 from .forms import TipoForm, VitrinaForm
 from .models import Tipo, Vitrina
@@ -98,8 +98,11 @@ class VitrinaUpdateView(AdminRequiredMixin, UpdateView):
     success_url = reverse_lazy("catalog:vitrina_list")
 
     def form_valid(self, form):
+        old_obj = Vitrina.objects.get(pk=self.object.pk)
+        old = {"nombre": old_obj.nombre or "", "url": str(old_obj.url or "")}
         response = super().form_valid(form)
-        record_vitrina(AuditLog.ACTION_VITRINA_UPDATED, self.object, self.request.user)
+        new = {"nombre": self.object.nombre or "", "url": str(self.object.url or "")}
+        record_vitrina_field_changes(self.object, self.request.user, old, new)
         messages.success(self.request, "Vitrina actualizada.")
         return response
 

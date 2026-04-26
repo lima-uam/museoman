@@ -2,6 +2,7 @@ import pytest
 from django.test import Client
 from django.urls import reverse
 
+from apps.audit.models import AuditLog
 from apps.catalog.models import Tipo, Vitrina
 
 
@@ -57,3 +58,44 @@ class TestVitrinaListPieceCount:
         resp = c.get(reverse("catalog:vitrina_list"))
         row = next(v for v in resp.context["vitrinas"] if v.pk == vitrina.pk)
         assert row.item_count == 0
+
+
+@pytest.mark.django_db
+class TestVitrinaUpdateView:
+    def _client(self, user):
+        c = Client()
+        c.force_login(user)
+        return c
+
+    def test_update_nombre_emits_field_audit(self, admin_user, vitrina):
+        old_nombre = vitrina.nombre
+        c = self._client(admin_user)
+        resp = c.post(
+            reverse("catalog:vitrina_update", kwargs={"pk": vitrina.pk}),
+            {"nombre": "Sala nueva", "url": vitrina.url or ""},
+        )
+        assert resp.status_code == 302
+        log = AuditLog.objects.filter(vitrina=vitrina, action=AuditLog.ACTION_VITRINA_UPDATED, field="nombre").first()
+        assert log is not None
+        assert log.from_state == old_nombre
+        assert log.to_state == "Sala nueva"
+
+    def test_update_no_changes_emits_no_entries(self, admin_user, vitrina):
+        c = self._client(admin_user)
+        resp = c.post(
+            reverse("catalog:vitrina_update", kwargs={"pk": vitrina.pk}),
+            {"nombre": vitrina.nombre or "", "url": vitrina.url or ""},
+        )
+        assert resp.status_code == 302
+        assert AuditLog.objects.filter(vitrina=vitrina, action=AuditLog.ACTION_VITRINA_UPDATED).count() == 0
+
+    def test_update_url_emits_field_audit(self, admin_user, vitrina):
+        c = self._client(admin_user)
+        resp = c.post(
+            reverse("catalog:vitrina_update", kwargs={"pk": vitrina.pk}),
+            {"nombre": vitrina.nombre or "", "url": "https://new.example.com"},
+        )
+        assert resp.status_code == 302
+        log = AuditLog.objects.filter(vitrina=vitrina, action=AuditLog.ACTION_VITRINA_UPDATED, field="url").first()
+        assert log is not None
+        assert log.to_state == "https://new.example.com"
