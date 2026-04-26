@@ -171,6 +171,67 @@ class TestItemCreateView:
 
 
 @pytest.mark.django_db
+class TestItemUpdateView:
+    def test_update_nombre_emits_field_audit(self, client_admin, item, tipo):
+        from apps.audit.models import AuditLog
+
+        old_nombre = item.nombre
+        resp = client_admin.post(
+            reverse("items:update", kwargs={"pk": item.pk}),
+            {"nombre": "Nombre Nuevo", "tipos": [tipo.pk], "observaciones": "", "url": ""},
+        )
+        assert resp.status_code == 302
+        log = AuditLog.objects.filter(item=item, action=AuditLog.ACTION_UPDATED, field="nombre").first()
+        assert log is not None
+        assert log.from_state == old_nombre
+        assert log.to_state == "Nombre Nuevo"
+
+    def test_update_two_fields_emits_two_entries(self, client_admin, item, tipo):
+        from apps.audit.models import AuditLog
+
+        resp = client_admin.post(
+            reverse("items:update", kwargs={"pk": item.pk}),
+            {"nombre": "Otro Nombre", "tipos": [tipo.pk], "observaciones": "nueva obs", "url": ""},
+        )
+        assert resp.status_code == 302
+        logs = AuditLog.objects.filter(item=item, action=AuditLog.ACTION_UPDATED)
+        changed_fields = set(logs.values_list("field", flat=True))
+        assert "nombre" in changed_fields
+        assert "observaciones" in changed_fields
+
+    def test_update_no_changes_emits_no_entries(self, client_admin, item, tipo):
+        from apps.audit.models import AuditLog
+
+        item.tipos.set([tipo])
+        resp = client_admin.post(
+            reverse("items:update", kwargs={"pk": item.pk}),
+            {
+                "nombre": item.nombre,
+                "tipos": [tipo.pk],
+                "observaciones": item.observaciones or "",
+                "url": item.url or "",
+            },
+        )
+        assert resp.status_code == 302
+        assert AuditLog.objects.filter(item=item, action=AuditLog.ACTION_UPDATED).count() == 0
+
+    def test_update_tipos_emits_sorted_joined_values(self, client_admin, item, tipo, admin_user):
+        from apps.audit.models import AuditLog
+        from apps.catalog.models import Tipo
+
+        tipo2 = Tipo.objects.create(nombre="Tipo Z")
+        resp = client_admin.post(
+            reverse("items:update", kwargs={"pk": item.pk}),
+            {"nombre": item.nombre, "tipos": [tipo.pk, tipo2.pk], "observaciones": "", "url": ""},
+        )
+        assert resp.status_code == 302
+        log = AuditLog.objects.filter(item=item, action=AuditLog.ACTION_UPDATED, field="tipos").first()
+        assert log is not None
+        assert tipo.nombre in log.to_state
+        assert tipo2.nombre in log.to_state
+
+
+@pytest.mark.django_db
 class TestItemTransitionView:
     def test_regular_user_can_assign_to_self(self, client_user, regular_user, item):
         resp = client_user.post(

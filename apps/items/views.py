@@ -10,7 +10,7 @@ from django.views.generic import CreateView, DetailView, UpdateView
 
 from apps.accounts.mixins import AdminRequiredMixin
 from apps.audit.models import AuditLog
-from apps.audit.services import record
+from apps.audit.services import record, record_field_changes
 
 from .forms import ItemFilterForm, ItemForm, PhotoUploadForm
 from .models import Item, ItemPhoto
@@ -148,8 +148,26 @@ class ItemUpdateView(LoginRequiredMixin, UpdateView):
         return get_object_or_404(Item.all_objects, pk=self.kwargs["pk"])
 
     def form_valid(self, form):
+        old_obj = Item.all_objects.select_related("vitrina").prefetch_related("tipos").get(pk=self.object.pk)
+        old = {
+            "nombre": old_obj.nombre or "",
+            "url": str(old_obj.url or ""),
+            "observaciones": old_obj.observaciones or "",
+            "vitrina_slot": old_obj.vitrina_slot or "",
+            "vitrina": old_obj.vitrina.nombre if old_obj.vitrina else "",
+            "tipos": ", ".join(sorted(old_obj.tipos.values_list("nombre", flat=True))),
+        }
         response = super().form_valid(form)
-        record(AuditLog.ACTION_UPDATED, self.object, self.request.user)
+        new_obj = Item.all_objects.select_related("vitrina").prefetch_related("tipos").get(pk=self.object.pk)
+        new = {
+            "nombre": new_obj.nombre or "",
+            "url": str(new_obj.url or ""),
+            "observaciones": new_obj.observaciones or "",
+            "vitrina_slot": new_obj.vitrina_slot or "",
+            "vitrina": new_obj.vitrina.nombre if new_obj.vitrina else "",
+            "tipos": ", ".join(sorted(new_obj.tipos.values_list("nombre", flat=True))),
+        }
+        record_field_changes(new_obj, self.request.user, old, new)
         messages.success(self.request, "Pieza actualizada.")
         return response
 
