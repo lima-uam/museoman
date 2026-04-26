@@ -101,8 +101,10 @@ MEDIA_ROOT = os.environ.get("MEDIA_ROOT", BASE_DIR / "media")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# Discord webhook (optional)
+# Discord (optional)
 DISCORD_WEBHOOK_URL = os.environ.get("DISCORD_WEBHOOK_URL", "")
+DISCORD_GUILD_ID = os.environ.get("DISCORD_GUILD_ID", "1413494050463420416")
+DISCORD_BOT_TOKEN = os.environ.get("DISCORD_BOT_TOKEN", "")
 
 # Max concurrent non-documentado items per regular user (0 = unlimited)
 ITEM_ASSIGNMENT_LIMIT = int(os.environ.get("ITEM_ASSIGNMENT_LIMIT", "5"))

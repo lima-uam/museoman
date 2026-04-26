@@ -84,11 +84,62 @@
     </div>
   </div>
 
+  {% if discord %}
+  <div class="card discord-card">
+    <div class="discord-header">
+      <span class="discord-name">{{ discord.name }}</span>
+      <div class="discord-stats">
+        {% if discord.member_count %}
+        <span class="discord-stat"><span class="discord-status-dot discord-status-dot--offline"></span>{{ discord.member_count }} miembros</span>
+        {% endif %}
+        <span class="discord-stat"><span class="discord-status-dot discord-status-dot--online"></span>{{ discord.presence_count }} en linea</span>
+      </div>
+    </div>
+
+    {% if discord.channels %}
+    <div class="discord-section-label">Canales</div>
+    <ul class="discord-channel-list">
+      {% for ch in discord.channels %}
+      <li class="discord-channel">
+        <svg class="discord-channel-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+        {{ ch.name }}
+      </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if discord.members %}
+    <div class="discord-section-label">En linea</div>
+    <ul class="discord-member-list">
+      {% for m in discord.members|slice:":10" %}
+      <li class="discord-member">
+        {% if m.avatar_url %}
+        <img class="discord-avatar" src="{{ m.avatar_url }}" alt="{{ m.username }}" width="28" height="28">
+        {% else %}
+        <span class="discord-avatar discord-avatar--placeholder">{{ m.username|slice:":1" }}</span>
+        {% endif %}
+        <span class="discord-username">{{ m.username }}</span>
+        <span class="discord-status-dot discord-status-dot--{{ m.status|default:'online' }}"></span>
+      </li>
+      {% endfor %}
+      {% if discord.members|length > 10 %}
+      <li class="discord-member discord-member--more">y {{ discord.members|length|add:"-10" }} mas...</li>
+      {% endif %}
+    </ul>
+    {% endif %}
+
+    <div style="margin-top:.8rem">
+      <a href="{{ discord.instant_invite|default:'https://lima.sh/link/discord' }}"
+         target="_blank" rel="noopener" class="btn btn-primary btn-sm">Unirse al servidor</a>
+    </div>
+  </div>
+  {% else %}
   <div class="card" style="padding:0;overflow:hidden">
     <iframe src="https://discord.com/widget?id=1413494050463420416&theme=dark"
             width="350" height="500" allowtransparency="true" frameborder="0"
             sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts">
     </iframe>
   </div>
+  {% endif %}
 </div>
 {% endblock %}

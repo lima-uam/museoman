@@ -271,6 +271,27 @@ body.pv-open { overflow: hidden; }
 .audit-badge-vitrina_updated { background: #fff3cd; color: #664d03; }
 .audit-badge-vitrina_deleted { background: #f8d7da; color: #842029; }
 
+/* ── Discord widget ── */
+.discord-card { display: flex; flex-direction: column; gap: .6rem; }
+.discord-header { display: flex; flex-direction: column; gap: .3rem; padding-bottom: .6rem; border-bottom: 1px solid var(--clr-border); }
+.discord-name { font-weight: 700; font-size: 1rem; }
+.discord-stats { display: flex; flex-wrap: wrap; gap: .6rem; }
+.discord-stat { display: flex; align-items: center; gap: .35rem; font-size: .82rem; color: var(--clr-muted); }
+.discord-status-dot { display: inline-block; width: .55rem; height: .55rem; border-radius: 50%; flex-shrink: 0; }
+.discord-status-dot--online { background: #3ba55c; }
+.discord-status-dot--idle { background: #faa81a; }
+.discord-status-dot--dnd { background: #ed4245; }
+.discord-status-dot--offline { background: #747f8d; }
+.discord-section-label { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--clr-muted); margin-top: .2rem; }
+.discord-channel-list, .discord-member-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: .15rem; }
+.discord-channel { display: flex; align-items: center; gap: .35rem; font-size: .85rem; padding: .2rem 0; color: var(--clr-muted); }
+.discord-channel-icon { width: 1rem; height: 1rem; flex-shrink: 0; }
+.discord-member { display: flex; align-items: center; gap: .45rem; font-size: .85rem; padding: .2rem 0; }
+.discord-member--more { color: var(--clr-muted); font-style: italic; }
+.discord-avatar { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+.discord-avatar--placeholder { display: inline-flex; align-items: center; justify-content: center; background: var(--clr-border); color: var(--clr-muted); font-size: .8rem; font-weight: 700; }
+.discord-username { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
 /* ── Helpers ── */
 .text-muted   { color: var(--clr-muted); }
 .text-center  { text-align: center; }

@@ -7,6 +7,8 @@ from django.views.generic import TemplateView
 from apps.items.models import Item
 from apps.items.state import State
 
+from .services import get_discord_widget
+
 User = get_user_model()
 
 
@@ -49,4 +51,5 @@ class AboutView(TemplateView):
         ctx = super().get_context_data(**kwargs)
         ctx.update(get_stats_context())
         ctx["assignment_limit"] = getattr(settings, "ITEM_ASSIGNMENT_LIMIT", 5)
+        ctx["discord"] = get_discord_widget()
         return ctx
