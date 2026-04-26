@@ -181,8 +181,8 @@
         resetZoom();
       } else {
         stage.classList.add('zoomed');
-        img.style.transformOrigin = '50% 50%';
         img.style.transform = 'scale(3)';
+        stage.dispatchEvent(new MouseEvent('mousemove', { bubbles: true, clientX: e.clientX, clientY: e.clientY }));
       }
     }
   });
