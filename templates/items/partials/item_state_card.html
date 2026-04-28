@@ -5,100 +5,92 @@
   .state-actions { display: flex; flex-direction: column; gap: .5rem; }
 </style>
 <div class="card" id="state-card">
-  <div class="card-header">Estado</div>
-  <div class="state-display">
-    <span class="badge badge-{{ item.estado }}">
-      {{ item.get_estado_display }}
-    </span>
-  </div>
-
-  {% if item.estado == 'libre' %}
-  <!-- Assign form -->
-  <form method="post" action="{% url 'items:assign' item.pk %}"
-        hx-post="{% url 'items:assign' item.pk %}"
-        hx-target="#state-card"
-        hx-swap="outerHTML">
-    {% csrf_token %}
-    {% if user.is_staff and users %}
-    <div class="form-group">
-      <label class="form-label">Asignar a</label>
-      <select class="form-control" name="assign_to">
-        {% for u in users %}
-        <option value="{{ u.pk }}">{{ u.name }}</option>
-        {% endfor %}
-      </select>
+    <div class="card-header">Estado</div>
+    <div class="state-display">
+        <span class="badge badge-{{ item.estado }}">{{ item.get_estado_display }}</span>
     </div>
+    {% if item.estado == 'libre' %}
+        <!-- Assign form -->
+        <form method="post"
+              action="{% url 'items:assign' item.pk %}"
+              hx-post="{% url 'items:assign' item.pk %}"
+              hx-target="#state-card"
+              hx-swap="outerHTML">
+            {% csrf_token %}
+            {% if user.is_staff and users %}
+                <div class="form-group">
+                    <label class="form-label">Asignar a</label>
+                    <select class="form-control" name="assign_to">
+                        {% for u in users %}<option value="{{ u.pk }}">{{ u.name }}</option>{% endfor %}
+                    </select>
+                </div>
+            {% endif %}
+            <button type="submit" class="btn btn-primary btn-block">
+                Asignar
+                {% if not user.is_staff %}a mí{% endif %}
+            </button>
+        </form>
+    {% elif can_advance or can_revert %}
+        <div class="state-actions">
+            {% if can_advance %}
+                <form method="post"
+                      action="{% url 'items:transition' item.pk %}"
+                      hx-post="{% url 'items:transition' item.pk %}"
+                      hx-target="#state-card"
+                      hx-swap="outerHTML">
+                    {% csrf_token %}
+                    <input type="hidden" name="target" value="{{ next_state }}">
+                    {% if next_state == 'asignado' and user.is_staff and users %}
+                        <div class="form-group">
+                            <label class="form-label">Asignar a</label>
+                            <select class="form-control" name="assign_to">
+                                {% for u in users %}<option value="{{ u.pk }}">{{ u.name }}</option>{% endfor %}
+                            </select>
+                        </div>
+                    {% endif %}
+                    <button type="submit" class="btn btn-primary btn-block">
+                        {% if item.estado == 'asignado' %}
+                            Enviar a revisión
+                        {% elif item.estado == 'en_revision' %}
+                            Aceptar cambios
+                        {% else %}
+                            Avanzar a «{{ next_state|capfirst }}»
+                        {% endif %}
+                    </button>
+                </form>
+            {% endif %}
+            {% if can_revert %}
+                <form method="post"
+                      action="{% url 'items:transition' item.pk %}"
+                      hx-post="{% url 'items:transition' item.pk %}"
+                      hx-target="#state-card"
+                      hx-swap="outerHTML">
+                    {% csrf_token %}
+                    <input type="hidden" name="target" value="{{ prev_state }}">
+                    <button type="submit"
+                            class="btn btn-secondary btn-block"
+                            onclick="return confirm('¿Revertir el estado?')">
+                        {% if item.estado == 'asignado' %}
+                            ← Desasignar
+                        {% elif item.estado == 'en_revision' %}
+                            ← Rechazar cambios
+                        {% elif item.estado == 'documentado' %}
+                            ← Enviar a revisión
+                        {% else %}
+                            ← Revertir a «{{ prev_state|capfirst }}»
+                        {% endif %}
+                    </button>
+                </form>
+            {% endif %}
+        </div>
+    {% else %}
+        <p class="text-muted text-center text-sm m-0">No tienes permiso para cambiar el estado de esta pieza.</p>
     {% endif %}
-    <button type="submit" class="btn btn-primary btn-block">
-      Asignar{% if not user.is_staff %} a mí{% endif %}
-    </button>
-  </form>
-
-  {% elif can_advance or can_revert %}
-  <div class="state-actions">
-    {% if can_advance %}
-    <form method="post" action="{% url 'items:transition' item.pk %}"
-          hx-post="{% url 'items:transition' item.pk %}"
-          hx-target="#state-card"
-          hx-swap="outerHTML">
-      {% csrf_token %}
-      <input type="hidden" name="target" value="{{ next_state }}">
-      {% if next_state == 'asignado' and user.is_staff and users %}
-      <div class="form-group">
-        <label class="form-label">Asignar a</label>
-        <select class="form-control" name="assign_to">
-          {% for u in users %}
-          <option value="{{ u.pk }}">{{ u.name }}</option>
-          {% endfor %}
-        </select>
-      </div>
-      {% endif %}
-      <button type="submit" class="btn btn-primary btn-block">
-        {% if item.estado == 'asignado' %}
-          Enviar a revisión
-        {% elif item.estado == 'en_revision' %}
-          Aceptar cambios
-        {% else %}
-          Avanzar a «{{ next_state|capfirst }}»
-        {% endif %}
-      </button>
-    </form>
-    {% endif %}
-
-    {% if can_revert %}
-    <form method="post" action="{% url 'items:transition' item.pk %}"
-          hx-post="{% url 'items:transition' item.pk %}"
-          hx-target="#state-card"
-          hx-swap="outerHTML">
-      {% csrf_token %}
-      <input type="hidden" name="target" value="{{ prev_state }}">
-      <button type="submit" class="btn btn-secondary btn-block"
-              onclick="return confirm('¿Revertir el estado?')">
-        {% if item.estado == 'asignado' %}
-          ← Desasignar
-        {% elif item.estado == 'en_revision' %}
-          ← Rechazar cambios
-        {% elif item.estado == 'documentado' %}
-          ← Enviar a revisión
-        {% else %}
-          ← Revertir a «{{ prev_state|capfirst }}»
-        {% endif %}
-      </button>
-    </form>
-    {% endif %}
-  </div>
-  {% else %}
-  <p class="text-muted text-center text-sm m-0">
-    No tienes permiso para cambiar el estado de esta pieza.
-  </p>
-  {% endif %}
 </div>
 <ul id="flash-messages" class="messages" hx-swap-oob="true">
-  {% for message in messages %}
-  <li class="message message-{{ message.tags }}">{{ message }}</li>
-  {% endfor %}
+    {% for message in messages %}<li class="message message-{{ message.tags }}">{{ message }}</li>{% endfor %}
 </ul>
 {% if request.htmx %}
-{% include "items/partials/item_header.html" with oob=True %}
-{% include "items/partials/item_info.html" with oob=True %}
+    {% include "items/partials/item_header.html" with oob=True %}
+    {% include "items/partials/item_info.html" with oob=True %}
 {% endif %}

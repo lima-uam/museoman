@@ -1,93 +1,83 @@
 {% extends "base.html" %}
 {% block title %}{{ item.nombre }}{% endblock %}
-
 {% block content %}
-<style>
-  .item-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-</style>
-{% include "items/partials/item_header.html" %}
-
-{% if not item.activo %}
-<div class="message message-warning">Esta pieza está inactiva.</div>
-{% endif %}
-
-<div class="item-detail-grid">
-
-  {% include "items/partials/item_info.html" %}
-
-  <!-- State card -->
-  <div id="state-card">
-    {% include "items/partials/item_state_card.html" %}
-  </div>
-
-</div>
-
-<!-- Photos -->
-<div class="card mt-2">
-  <div class="card-header">Fotos</div>
-  {% if photos %}
-  <div class="photo-grid">
-    {% for photo in photos %}
-    <div class="photo-item">
-      <button type="button" class="photo-open" data-photo-index="{{ forloop.counter0 }}">
-        <img src="{{ photo.image.url }}" alt="Foto {{ forloop.counter }}">
-      </button>
-      {% if user.is_staff %}
-      <form method="post" action="{% url 'items:photo_delete' item.pk photo.pk %}"
-            onclick="event.stopPropagation()">
-        {% csrf_token %}
-        <button class="photo-delete" title="Eliminar foto" onclick="return confirm('¿Eliminar esta foto?')">×</button>
-      </form>
-      {% endif %}
+    <style>.item-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }</style>
+    {% include "items/partials/item_header.html" %}
+    {% if not item.activo %}<div class="message message-warning">Esta pieza está inactiva.</div>{% endif %}
+    <div class="item-detail-grid">
+        {% include "items/partials/item_info.html" %}
+        <!-- State card -->
+        <div id="state-card">{% include "items/partials/item_state_card.html" %}</div>
     </div>
-    {% endfor %}
-  </div>
-  {% else %}
-  <p class="text-muted m-0">No hay fotos.</p>
-  {% endif %}
-
-  {% if user.is_staff %}
-  <hr class="separator">
-  <form method="post" action="{% url 'items:photo_upload' item.pk %}" enctype="multipart/form-data">
-    {% csrf_token %}
-    <div class="form-inline">
-      <div class="form-group">
-        <label class="form-label">Añadir foto</label>
-        {{ photo_form.image }}
-      </div>
-      <div class="form-group form-actions-end">
-        <button type="submit" class="btn btn-primary btn-sm">Subir</button>
-      </div>
+    <!-- Photos -->
+    <div class="card mt-2">
+        <div class="card-header">Fotos</div>
+        {% if photos %}
+            <div class="photo-grid">
+                {% for photo in photos %}
+                    <div class="photo-item">
+                        <button type="button"
+                                class="photo-open"
+                                data-photo-index="{{ forloop.counter0 }}">
+                            <img src="{{ photo.image.url }}" alt="Foto {{ forloop.counter }}">
+                        </button>
+                        {% if user.is_staff %}
+                            <form method="post"
+                                  action="{% url 'items:photo_delete' item.pk photo.pk %}"
+                                  onclick="event.stopPropagation()">
+                                {% csrf_token %}
+                                <button class="photo-delete"
+                                        title="Eliminar foto"
+                                        onclick="return confirm('¿Eliminar esta foto?')">×</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted m-0">No hay fotos.</p>
+        {% endif %}
+        {% if user.is_staff %}
+            <hr class="separator">
+            <form method="post"
+                  action="{% url 'items:photo_upload' item.pk %}"
+                  enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-inline">
+                    <div class="form-group">
+                        <label class="form-label">Añadir foto</label>
+                        {{ photo_form.image }}
+                    </div>
+                    <div class="form-group form-actions-end">
+                        <button type="submit" class="btn btn-primary btn-sm">Subir</button>
+                    </div>
+                </div>
+                {% if photo_form.image.errors %}<div class="form-errors">{{ photo_form.image.errors.as_text }}</div>{% endif %}
+            </form>
+        {% endif %}
     </div>
-    {% if photo_form.image.errors %}
-    <div class="form-errors">{{ photo_form.image.errors.as_text }}</div>
-    {% endif %}
-  </form>
-  {% endif %}
-</div>
-
-<!-- Audit log -->
-<div class="mt-2">
-  <a href="{% url 'items:audit_log' item.pk %}" class="btn btn-outline btn-sm">Ver historial</a>
-</div>
-
-<div class="mt-2">
-  <a href="{% url 'items:list' %}" class="btn btn-outline btn-sm">← Volver al listado</a>
-</div>
-
-<!-- Photo viewer modal -->
-<div id="photo-viewer" hidden>
-  <button class="pv-close" aria-label="Cerrar">×</button>
-  <button class="pv-prev" aria-label="Anterior">&#8249;</button>
-  <button class="pv-next" aria-label="Siguiente">&#8250;</button>
-  <div class="pv-stage"><img alt=""></div>
-  <div class="pv-counter"></div>
-</div>
-{{ photo_urls|json_script:"photo-viewer-data" }}
+    <!-- Audit log -->
+    <div class="mt-2">
+        <a href="{% url 'items:audit_log' item.pk %}"
+           class="btn btn-outline btn-sm">Ver historial</a>
+    </div>
+    <div class="mt-2">
+        <a href="{% url 'items:list' %}" class="btn btn-outline btn-sm">← Volver al listado</a>
+    </div>
+    <!-- Photo viewer modal -->
+    <div id="photo-viewer" hidden>
+        <button class="pv-close" aria-label="Cerrar">×</button>
+        <button class="pv-prev" aria-label="Anterior">&#8249;</button>
+        <button class="pv-next" aria-label="Siguiente">&#8250;</button>
+        <div class="pv-stage">
+            <img alt="">
+        </div>
+        <div class="pv-counter"></div>
+    </div>
+    {{ photo_urls|json_script:"photo-viewer-data" }}
 {% endblock %}
-
 {% block extra_js %}
-<script>
+    <script>
 (function () {
   var dataEl = document.getElementById('photo-viewer-data');
   if (!dataEl) return;
@@ -180,5 +170,5 @@
     img.style.transformOrigin = x + '% ' + y + '%';
   });
 })();
-</script>
+    </script>
 {% endblock %}

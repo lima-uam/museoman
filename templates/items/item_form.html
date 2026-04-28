@@ -1,55 +1,55 @@
 {% extends "base.html" %}
 {% block title %}{{ titulo }}{% endblock %}
-
 {% block content %}
-<style>
+    <style>
   .item-form-row { display: flex; gap: .75rem; align-items: flex-start; }
   .item-form-row > :first-child { flex: 1; }
-</style>
-<div class="form-narrow--lg">
-<h1 class="page-title">{{ titulo }}</h1>
-<div class="card">
-  <form method="post">
-    {% csrf_token %}
-    {% for field in form %}
-    {% if field.name == 'vitrina' %}
-    <div class="form-group">
-      <div class="item-form-row">
-        <div>
-          <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
-          {{ field }}
-          {% if field.errors %}<div class="form-errors">{{ field.errors.as_text }}</div>{% endif %}
+    </style>
+    <div class="form-narrow--lg">
+        <h1 class="page-title">{{ titulo }}</h1>
+        <div class="card">
+            <form method="post">
+                {% csrf_token %}
+                {% for field in form %}
+                    {% if field.name == 'vitrina' %}
+                        <div class="form-group">
+                            <div class="item-form-row">
+                                <div>
+                                    <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                    {{ field }}
+                                    {% if field.errors %}<div class="form-errors">{{ field.errors.as_text }}</div>{% endif %}
+                                </div>
+                                <div>
+                                    <label class="form-label" for="{{ form.vitrina_slot.id_for_label }}">{{ form.vitrina_slot.label }}</label>
+                                    {{ form.vitrina_slot }}
+                                    {% if form.vitrina_slot.errors %}<div class="form-errors">{{ form.vitrina_slot.errors.as_text }}</div>{% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% elif field.name == 'vitrina_slot' %}
+                    {% else %}
+                        <div class="form-group">
+                            <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}<div class="form-errors">{{ field.errors.as_text }}</div>{% endif %}
+                            {% if field.help_text %}<small class="text-muted">{{ field.help_text }}</small>{% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                <div class="flex gap-1 mt-2">
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                    <a href="{% if form.instance.pk %}{% url 'items:detail' form.instance.pk %}{% else %}{% url 'items:list' %}{% endif %}"
+                       class="btn btn-secondary">Cancelar</a>
+                </div>
+            </form>
         </div>
-        <div>
-          <label class="form-label" for="{{ form.vitrina_slot.id_for_label }}">{{ form.vitrina_slot.label }}</label>
-          {{ form.vitrina_slot }}
-          {% if form.vitrina_slot.errors %}<div class="form-errors">{{ form.vitrina_slot.errors.as_text }}</div>{% endif %}
-        </div>
-      </div>
     </div>
-    {% elif field.name == 'vitrina_slot' %}
-    {% else %}
-    <div class="form-group">
-      <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
-      {{ field }}
-      {% if field.errors %}<div class="form-errors">{{ field.errors.as_text }}</div>{% endif %}
-      {% if field.help_text %}<small class="text-muted">{{ field.help_text }}</small>{% endif %}
-    </div>
-    {% endif %}
-    {% endfor %}
-    <div class="flex gap-1 mt-2">
-      <button type="submit" class="btn btn-primary">Guardar</button>
-      <a href="{% if form.instance.pk %}{% url 'items:detail' form.instance.pk %}{% else %}{% url 'items:list' %}{% endif %}" class="btn btn-secondary">Cancelar</a>
-    </div>
-  </form>
-</div>
-</div>
 {% endblock %}
-
 {% block extra_js %}
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/css/tom-select.bootstrap5.min.css">
-<script src="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/js/tom-select.complete.min.js"></script>
-<style>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/css/tom-select.bootstrap5.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/js/tom-select.complete.min.js"></script>
+    <style>
   .ts-wrapper { font-size: .9rem; }
   .ts-wrapper .ts-control { border: 1px solid var(--clr-border); border-radius: var(--radius); padding: .35rem .6rem; background-color: var(--clr-surface); }
   .ts-control:focus-within { border-color: var(--clr-primary); box-shadow: 0 0 0 2px rgba(13,110,253,.15); }
@@ -58,8 +58,8 @@
   .ts-control .item { background: #e8f0fe; color: var(--clr-primary); border-radius: 4px; padding: .1rem .5rem; font-size: .8rem; font-weight: 500; }
   .ts-control .item .remove { color: var(--clr-primary); opacity: .7; margin-left: .3rem; }
   .ts-control .item .remove:hover { opacity: 1; }
-</style>
-<script>
+    </style>
+    <script>
   new TomSelect('#id_tipos', {
     plugins: ['remove_button'],
     placeholder: 'Buscar y añadir tipos…',
@@ -68,5 +68,5 @@
   document.getElementById('id_vitrina').addEventListener('change', function() {
     document.getElementById('id_vitrina_slot').value = '';
   });
-</script>
+    </script>
 {% endblock %}

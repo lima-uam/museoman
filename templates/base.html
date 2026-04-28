@@ -1,74 +1,60 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}Museoman{% endblock %} — LIMA EPS UAM</title>
-  {% load static %}
-  <link rel="stylesheet" href="{% static 'css/main.css' %}">
-</head>
-<body>
-
-<nav class="navbar">
-  <a class="navbar-brand" href="{% url 'about' %}">
-    Museoman
-  </a>
-  <div class="navbar-links">
-    {% if user.is_authenticated %}
-    <a href="{% url 'dashboard:index' %}"
-       {% if request.resolver_match.app_name == 'dashboard' %}class="active"{% endif %}>
-      Panel
-    </a>
-    <a href="{% url 'items:list' %}"
-       {% if request.resolver_match.app_name == 'items' %}class="active"{% endif %}>
-      Piezas
-    </a>
-    {% if user.is_staff %}
-    <a href="{% url 'accounts:user_list' %}"
-       {% if request.resolver_match.app_name == 'accounts' %}class="active"{% endif %}>
-      Usuarios
-    </a>
-    <a href="{% url 'catalog:tipo_list' %}"
-       {% if request.resolver_match.app_name == 'catalog' and 'tipo' in request.path %}class="active"{% endif %}>
-      Tipos
-    </a>
-    <a href="{% url 'catalog:vitrina_list' %}"
-       {% if request.resolver_match.app_name == 'catalog' and 'vitrina' in request.path %}class="active"{% endif %}>
-      Vitrinas
-    </a>
-    {% endif %}
-    {% endif %}
-    <a href="{% url 'about' %}"
-       {% if request.resolver_match.url_name == 'about' %}class="active"{% endif %}>
-      Sobre el proyecto
-    </a>
-  </div>
-  <div class="navbar-user">
-    {% if user.is_authenticated %}
-    {{ user.name }} &nbsp;·&nbsp;
-    <a href="{% url 'password_change' %}">Cambiar contraseña</a>
-    &nbsp;·&nbsp;
-    <form method="post" action="{% url 'logout' %}" class="d-inline">
-      {% csrf_token %}
-      <button type="submit" class="btn-link">Salir</button>
-    </form>
-    {% else %}
-    <a href="{% url 'login' %}" class="btn btn-primary btn-sm">Iniciar sesión</a>
-    {% endif %}
-  </div>
-</nav>
-
-<div class="container">
-  <ul class="messages" id="flash-messages">
-    {% for message in messages %}
-    <li class="message message-{{ message.tags }}">{{ message }}</li>
-    {% endfor %}
-  </ul>
-
-  {% block content %}{% endblock %}
-</div>
-
-<script src="{% static 'js/htmx.min.js' %}"></script>
-{% block extra_js %}{% endblock %}
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>
+            {% block title %}Museoman{% endblock %}
+        — LIMA EPS UAM</title>
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    </head>
+    <body>
+        <nav class="navbar">
+            <a class="navbar-brand" href="{% url 'about' %}">Museoman</a>
+            <div class="navbar-links">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'dashboard:index' %}"
+                       {% if request.resolver_match.app_name == 'dashboard' %}class="active"{% endif %}>Panel</a>
+                    <a href="{% url 'items:list' %}"
+                       {% if request.resolver_match.app_name == 'items' %}class="active"{% endif %}>Piezas</a>
+                    {% if user.is_staff %}
+                        <a href="{% url 'accounts:user_list' %}"
+                           {% if request.resolver_match.app_name == 'accounts' %}class="active"{% endif %}>Usuarios</a>
+                        <a href="{% url 'catalog:tipo_list' %}"
+                           {% if request.resolver_match.app_name == 'catalog' and 'tipo' in request.path %}class="active"{% endif %}>
+                            Tipos
+                        </a>
+                        <a href="{% url 'catalog:vitrina_list' %}"
+                           {% if request.resolver_match.app_name == 'catalog' and 'vitrina' in request.path %}class="active"{% endif %}>
+                            Vitrinas
+                        </a>
+                    {% endif %}
+                {% endif %}
+                <a href="{% url 'about' %}"
+                   {% if request.resolver_match.url_name == 'about' %}class="active"{% endif %}>Sobre el proyecto</a>
+            </div>
+            <div class="navbar-user">
+                {% if user.is_authenticated %}
+                    {{ user.name }} &nbsp;·&nbsp;
+                    <a href="{% url 'password_change' %}">Cambiar contraseña</a>
+                    &nbsp;·&nbsp;
+                    <form method="post" action="{% url 'logout' %}" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-link">Salir</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-primary btn-sm">Iniciar sesión</a>
+                {% endif %}
+            </div>
+        </nav>
+        <div class="container">
+            <ul class="messages" id="flash-messages">
+                {% for message in messages %}<li class="message message-{{ message.tags }}">{{ message }}</li>{% endfor %}
+            </ul>
+            {% block content %}{% endblock %}
+        </div>
+        <script src="{% static 'js/htmx.min.js' %}"></script>
+        {% block extra_js %}{% endblock %}
+    </body>
 </html>

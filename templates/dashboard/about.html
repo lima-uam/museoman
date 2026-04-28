@@ -1,8 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Sobre el proyecto{% endblock %}
-
 {% block content %}
-<style>
+    <style>
   .about-grid { display: grid; grid-template-columns: 1fr 350px; gap: 1.5rem; align-items: start; }
   @media (max-width: 780px) {
     .about-grid { grid-template-columns: 1fr; }
@@ -13,142 +12,152 @@
   .about-section-list  { margin: 0; padding-left: 1.2rem; font-size: .9rem; line-height: 2; }
   .about-section-text  { margin: 0; font-size: .9rem; }
   .about-limit-note    { font-size: .82rem; margin: 1rem 0 0; }
-</style>
-
-<h1 class="page-title">Sobre el proyecto</h1>
-
-<!-- Public stats -->
-<div class="stat-grid">
-  <div class="stat-card">
-    <div class="stat-value">{{ total_items }}</div>
-    <div class="stat-label">Total piezas activas</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-value stat-value--libre">{{ state_counts.libre }}</div>
-    <div class="stat-label">Libres</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-value stat-value--asignado">{{ state_counts.asignado }}</div>
-    <div class="stat-label">Asignadas</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-value stat-value--en_revision">{{ state_counts.en_revision }}</div>
-    <div class="stat-label">En revisión</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-value stat-value--documentado">{{ state_counts.documentado }}</div>
-    <div class="stat-label">Documentadas</div>
-  </div>
-</div>
-
-<!-- Progress bar -->
-<div class="card">
-  <div class="card-header">Progreso de documentación</div>
-  <div class="progress">
-    <div class="progress-bar" style="width:{{ progress }}%">{{ progress }}%</div>
-  </div>
-  <p class="text-muted mt-1 text-xs m-0">
-    {{ state_counts.documentado }} de {{ total_items }} piezas documentadas
-  </p>
-</div>
-
-<!-- Project info + Discord widget -->
-<div class="about-grid">
-  <div>
+    </style>
+    <h1 class="page-title">Sobre el proyecto</h1>
+    <!-- Public stats -->
+    <div class="stat-grid">
+        <div class="stat-card">
+            <div class="stat-value">{{ total_items }}</div>
+            <div class="stat-label">Total piezas activas</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value stat-value--libre">{{ state_counts.libre }}</div>
+            <div class="stat-label">Libres</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value stat-value--asignado">{{ state_counts.asignado }}</div>
+            <div class="stat-label">Asignadas</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value stat-value--en_revision">{{ state_counts.en_revision }}</div>
+            <div class="stat-label">En revisión</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value stat-value--documentado">{{ state_counts.documentado }}</div>
+            <div class="stat-label">Documentadas</div>
+        </div>
+    </div>
+    <!-- Progress bar -->
     <div class="card">
-      <h2 class="about-card-title">Museoman</h2>
-      <p>
-        Sistema de inventariado y gestión de documentación de piezas del museo de la
-        <strong>Escuela Politécnica Superior (EPS)</strong> de la
-        <strong>Universidad Autónoma de Madrid (UAM)</strong>.
-      </p>
-      <p>
-        Desarrollado y mantenido por la asociación de estudiantes
-        <strong><a href="https://lima.sh">LIMA</a> (Laboratorio de Informática y Matemáticas)</strong>
-        como parte de la colaboración con el <a href="https://www.museo.eps.uam.es/">Museo Tecnológico EPS-UAM</a>.
-      </p>
-      <hr class="separator">
-      <h3 class="about-section-label">¿Quieres ayudarnos? ¡Apúntate!</h3>
-      <ul class="about-section-list">
-        <a href="https://lima.sh/link/unirse">Únete a nuestra asociación</a> y contacta con nosotros en
-        <a href="https://lima.sh/link/discord">discord</a>.
-      </ul>
-      <p class="text-muted about-limit-note">
-        {% if assignment_limit %}Cada colaborador puede tener asignadas hasta {{ assignment_limit }} piezas pendientes de documentar simultáneamente.{% else %}No hay límite de piezas asignadas por colaborador.{% endif %}
-      </p>
+        <div class="card-header">Progreso de documentación</div>
+        <div class="progress">
+            <div class="progress-bar" style="width:{{ progress }}%">{{ progress }}%</div>
+        </div>
+        <p class="text-muted mt-1 text-xs m-0">{{ state_counts.documentado }} de {{ total_items }} piezas documentadas</p>
     </div>
-
-    <div class="card">
-      <h3 class="about-section-label">Contacto</h3>
-      <p class="about-section-text">
-        Laboratorio de Informática y Matemáticas (LIMA)<br>
-        Local B-102, Escuela Politécnica Superior,<br>
-        C/ Francisco Tomás y Valiente, 11, 28049 Madrid.<br>
-        <a href="https://lima.sh/link/discord">Discord</a>
-      </p>
-    </div>
-  </div>
-
-  {% if discord %}
-  <div class="discord-card">
-    <div class="discord-header">
-      <span class="discord-name">{{ discord.name }}</span>
-      <div class="discord-stats">
-        {% if discord.member_count %}
-        <span class="discord-stat"><span class="discord-status-dot discord-status-dot--offline"></span>{{ discord.member_count }} miembros</span>
+    <!-- Project info + Discord widget -->
+    <div class="about-grid">
+        <div>
+            <div class="card">
+                <h2 class="about-card-title">Museoman</h2>
+                <p>
+                    Sistema de inventariado y gestión de documentación de piezas del museo de la
+                    <strong>Escuela Politécnica Superior (EPS)</strong> de la
+                    <strong>Universidad Autónoma de Madrid (UAM)</strong>.
+                </p>
+                <p>
+                    Desarrollado y mantenido por la asociación de estudiantes
+                    <strong><a href="https://lima.sh">LIMA</a> (Laboratorio de Informática y Matemáticas)</strong>
+                    como parte de la colaboración con el <a href="https://www.museo.eps.uam.es/">Museo Tecnológico EPS-UAM</a>.
+                </p>
+                <hr class="separator">
+                <h3 class="about-section-label">¿Quieres ayudarnos? ¡Apúntate!</h3>
+                <ul class="about-section-list">
+                    <a href="https://lima.sh/link/unirse">Únete a nuestra asociación</a> y contacta con nosotros en
+                    <a href="https://lima.sh/link/discord">discord</a>.
+                </ul>
+                <p class="text-muted about-limit-note">
+                    {% if assignment_limit %}
+                        Cada colaborador puede tener asignadas hasta {{ assignment_limit }} piezas pendientes de documentar simultáneamente.
+                    {% else %}
+                        No hay límite de piezas asignadas por colaborador.
+                    {% endif %}
+                </p>
+            </div>
+            <div class="card">
+                <h3 class="about-section-label">Contacto</h3>
+                <p class="about-section-text">
+                    Laboratorio de Informática y Matemáticas (LIMA)
+                    <br>
+                    Local B-102, Escuela Politécnica Superior,
+                    <br>
+                    C/ Francisco Tomás y Valiente, 11, 28049 Madrid.
+                    <br>
+                    <a href="https://lima.sh/link/discord">Discord</a>
+                </p>
+            </div>
+        </div>
+        {% if discord %}
+            <div class="discord-card">
+                <div class="discord-header">
+                    <span class="discord-name">{{ discord.name }}</span>
+                    <div class="discord-stats">
+                        {% if discord.member_count %}
+                            <span class="discord-stat"><span class="discord-status-dot discord-status-dot--offline"></span>{{ discord.member_count }} miembros</span>
+                        {% endif %}
+                        <span class="discord-stat"><span class="discord-status-dot discord-status-dot--online"></span>{{ discord.presence_count }} en linea</span>
+                    </div>
+                </div>
+                <div class="discord-body">
+                    {% if discord.channels %}
+                        <div class="discord-section-label">Canales de voz</div>
+                        <ul class="discord-channel-list">
+                            {% for ch in discord.channels %}
+                                <li class="discord-channel">
+                                    <svg class="discord-channel-icon"
+                                         viewBox="0 0 24 24"
+                                         fill="currentColor"
+                                         aria-hidden="true">
+                                        <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02z" />
+                                    </svg>
+                                    {{ ch.name }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    {% if discord.members %}
+                        <div class="discord-section-label">En linea - {{ discord.presence_count }}</div>
+                        <ul class="discord-member-list">
+                            {% for m in discord.members|slice:":10" %}
+                                <li class="discord-member">
+                                    <div class="discord-avatar-wrap">
+                                        {% if m.avatar_url %}
+                                            <img class="discord-avatar"
+                                                 src="{{ m.avatar_url }}"
+                                                 alt="{{ m.username }}"
+                                                 width="32"
+                                                 height="32">
+                                        {% else %}
+                                            <span class="discord-avatar discord-avatar--placeholder">{{ m.username|slice:":1" }}</span>
+                                        {% endif %}
+                                        <span class="discord-status-dot discord-status-dot--{{ m.status|default:'online' }}"></span>
+                                    </div>
+                                    <span class="discord-username">{{ m.username }}</span>
+                                </li>
+                            {% endfor %}
+                            {% if discord.members|length > 10 %}
+                                <li class="discord-member discord-member--more">y {{ discord.members|length|add:"-10" }} mas...</li>
+                            {% endif %}
+                        </ul>
+                    {% endif %}
+                </div>
+                <div class="discord-footer">
+                    <a href="{{ discord.instant_invite|default:'https://lima.sh/link/discord' }}"
+                       target="_blank"
+                       rel="noopener"
+                       class="discord-join-btn">Unirse al servidor</a>
+                </div>
+            </div>
+        {% else %}
+            <div class="card" style="padding:0;overflow:hidden">
+                <iframe src="https://discord.com/widget?id=1413494050463420416&theme=dark"
+                        width="350"
+                        height="500"
+                        allowtransparency="true"
+                        frameborder="0"
+                        sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts">
+                </iframe>
+            </div>
         {% endif %}
-        <span class="discord-stat"><span class="discord-status-dot discord-status-dot--online"></span>{{ discord.presence_count }} en linea</span>
-      </div>
     </div>
-
-    <div class="discord-body">
-      {% if discord.channels %}
-      <div class="discord-section-label">Canales de voz</div>
-      <ul class="discord-channel-list">
-        {% for ch in discord.channels %}
-        <li class="discord-channel">
-          <svg class="discord-channel-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
-          {{ ch.name }}
-        </li>
-        {% endfor %}
-      </ul>
-      {% endif %}
-
-      {% if discord.members %}
-      <div class="discord-section-label">En linea - {{ discord.presence_count }}</div>
-      <ul class="discord-member-list">
-        {% for m in discord.members|slice:":10" %}
-        <li class="discord-member">
-          <div class="discord-avatar-wrap">
-            {% if m.avatar_url %}
-            <img class="discord-avatar" src="{{ m.avatar_url }}" alt="{{ m.username }}" width="32" height="32">
-            {% else %}
-            <span class="discord-avatar discord-avatar--placeholder">{{ m.username|slice:":1" }}</span>
-            {% endif %}
-            <span class="discord-status-dot discord-status-dot--{{ m.status|default:'online' }}"></span>
-          </div>
-          <span class="discord-username">{{ m.username }}</span>
-        </li>
-        {% endfor %}
-        {% if discord.members|length > 10 %}
-        <li class="discord-member discord-member--more">y {{ discord.members|length|add:"-10" }} mas...</li>
-        {% endif %}
-      </ul>
-      {% endif %}
-    </div>
-
-    <div class="discord-footer">
-      <a href="{{ discord.instant_invite|default:'https://lima.sh/link/discord' }}"
-         target="_blank" rel="noopener" class="discord-join-btn">Unirse al servidor</a>
-    </div>
-  </div>
-  {% else %}
-  <div class="card" style="padding:0;overflow:hidden">
-    <iframe src="https://discord.com/widget?id=1413494050463420416&theme=dark"
-            width="350" height="500" allowtransparency="true" frameborder="0"
-            sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts">
-    </iframe>
-  </div>
-  {% endif %}
-</div>
 {% endblock %}
