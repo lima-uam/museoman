@@ -1,15 +1,12 @@
 #!/usr/bin/env python3
 """
-Import items from a local directory using the Museoman web interface.
+Import items from a local directory.
 
 Each subdirectory of PATH becomes one Item (nombre = directory name).
-Image files inside each subdirectory become photos attached to that item.
-Supported formats: .jpg .jpeg .png .gif .webp (max 5 MB each).
+Image files inside become photos attached to that item.
 
 Usage:
-    scripts/local_import.py PATH --email EMAIL [--password PASS] [--url BASE_URL]
-
-Requires: requests  (in project deps — run via `uv run scripts/local_import.py ...`)
+    uv run scripts/import_unsorted.py PATH --email EMAIL [--password PASS] [--url BASE_URL]
 """
 
 import argparse
@@ -18,11 +15,7 @@ import re
 import sys
 from pathlib import Path
 
-try:
-    import requests
-except ImportError:
-    print("Error: 'requests' not found. Run via `uv run scripts/local_import.py` or pip install it.", file=sys.stderr)
-    sys.exit(1)
+import requests
 
 IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".webp"}
 
@@ -49,8 +42,7 @@ def create_item(session, base, nombre):
     )
     if resp.status_code != 302:
         return None
-    location = resp.headers.get("Location", "")
-    m = re.search(r"/items/(\d+)/", location)
+    m = re.search(r"/items/(\d+)/", resp.headers.get("Location", ""))
     return int(m.group(1)) if m else None
 
 
@@ -68,14 +60,9 @@ def upload_photo(session, base, item_pk, img_path):
 def main():
     parser = argparse.ArgumentParser(description="Import items from a local directory into Museoman")
     parser.add_argument("path", help="Directory: each subdirectory = one item")
-    parser.add_argument(
-        "--url",
-        default="http://localhost:8000",
-        metavar="URL",
-        help="Museoman base URL (default: http://localhost:8000)",
-    )
-    parser.add_argument("--email", required=True, help="Staff user email")
-    parser.add_argument("--password", metavar="PASS", help="Password (prompted if omitted)")
+    parser.add_argument("--url", default="http://localhost:8000", metavar="URL")
+    parser.add_argument("--email", required=True)
+    parser.add_argument("--password", metavar="PASS", help="Prompted if omitted")
     args = parser.parse_args()
 
     root = Path(args.path).resolve()
@@ -93,12 +80,10 @@ def main():
 
     session = requests.Session()
     if not login(session, base, args.email, password):
-        print("Login failed — check credentials and that the user is staff.", file=sys.stderr)
+        print("Login failed.", file=sys.stderr)
         sys.exit(1)
 
-    created_items = 0
-    created_photos = 0
-    errors = 0
+    created_items = created_photos = errors = 0
 
     for subdir in subdirs:
         nombre = subdir.name
@@ -110,23 +95,18 @@ def main():
         created_items += 1
 
         image_files = sorted(f for f in subdir.iterdir() if f.is_file() and f.suffix.lower() in IMAGE_EXTENSIONS)
-
         for img_path in image_files:
-            if not upload_photo(session, base, item_pk, img_path):
+            if upload_photo(session, base, item_pk, img_path):
+                created_photos += 1
+            else:
                 print(f"    [{img_path.name}] ERROR: upload failed", file=sys.stderr)
                 errors += 1
-            else:
-                created_photos += 1
 
         print(f"  {nombre} (id={item_pk}): {len(image_files)} foto(s)")
 
-    print(f"\nDone: {created_items} items, {created_photos} photos.", end="")
+    print(f"\nDone: {created_items} items, {created_photos} photos.")
     if errors:
-        print(f" ({errors} error(s) — see above)", file=sys.stderr)
-    else:
-        print()
-
-    if errors:
+        print(f"{errors} error(s) above.", file=sys.stderr)
         sys.exit(1)
 
 
