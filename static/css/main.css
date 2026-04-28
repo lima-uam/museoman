@@ -68,8 +68,15 @@ body {
   background: #e8f0fe;
 }
 
-.navbar-user { margin-left: auto; color: var(--clr-muted); font-size: .875rem; }
-.navbar-user a { text-decoration: none; }
+.navbar-user, .navbar-user a {
+  margin-left: auto;
+  color: var(--clr-muted);
+  font-size: .875rem;
+}
+
+.navbar-user a {
+  text-decoration: none;
+}
 
 .container {
   max-width: 1100px;
