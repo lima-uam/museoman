@@ -173,7 +173,8 @@ make dev                   # runserver
 make test                  # pytest with coverage
 make test-fast             # pytest --no-cov -q
 make lint                  # ruff check
-make fmt                   # ruff format + fix
+make fmt                   # ruff format + fix (Python only)
+make fmt-html              # djlint reformat (HTML templates only)
 make migrate               # makemigrations + migrate
 make seed                  # load demo data
 make createadmin           # create admin user interactively
@@ -181,7 +182,7 @@ make createadmin           # create admin user interactively
 
 Test settings: `config/test_settings.py`. Fixtures in `conftest.py` (root): `admin_user`, `regular_user`, `tipo`, `vitrina`, `item`.
 
-**Before every commit:** run `make fmt` if any Python file changed (`make fmt` runs ruff — Python only; HTML/CSS/JS are not covered). Run `make test-fast` only when logic changed (Python views, models, forms, services, templates with non-trivial logic). Pure template or CSS changes that touch no logic do not require tests.
+**Before every commit:** run `make fmt` if any Python file changed; run `make fmt-html` if any HTML template changed. `make fmt` runs ruff (Python only); `make fmt-html` runs djlint (HTML templates only). CSS is not covered by either. Run `make test-fast` only when logic changed (Python views, models, forms, services, templates with non-trivial logic). Pure template or CSS changes that touch no logic do not require tests.
 
 ---
 

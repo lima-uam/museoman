@@ -1,4 +1,4 @@
-.PHONY: install dev test lint fmt migrate shell seed
+.PHONY: install dev test lint fmt fmt-html migrate shell seed
 
 install:
 	uv sync --all-groups
@@ -18,6 +18,9 @@ lint:
 fmt:
 	uv run ruff format .
 	uv run ruff check --fix .
+
+fmt-html:
+	uv run djlint templates/ --reformat
 
 migrate:
 	uv run python manage.py makemigrations
