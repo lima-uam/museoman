@@ -10,11 +10,10 @@
 <div class="card">
   <div class="table-wrap">
     <table>
-      <thead><tr><th>ID</th><th>Nombre</th><th>Piezas</th><th>URL</th><th>Acciones</th></tr></thead>
+      <thead><tr><th>Nombre</th><th>Piezas</th><th>URL</th><th>Acciones</th></tr></thead>
       <tbody>
         {% for vitrina in vitrinas %}
         <tr>
-          <td>{{ vitrina.pk }}</td>
           <td>{{ vitrina.nombre|default:"—" }}</td>
           <td>{{ vitrina.item_count }}</td>
           <td>{% if vitrina.url %}<a href="{{ vitrina.url }}" target="_blank" rel="noopener">{{ vitrina.url }}</a>{% else %}—{% endif %}</td>
