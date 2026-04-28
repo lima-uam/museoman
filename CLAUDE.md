@@ -181,7 +181,7 @@ make createadmin           # create admin user interactively
 
 Test settings: `config/test_settings.py`. Fixtures in `conftest.py` (root): `admin_user`, `regular_user`, `tipo`, `vitrina`, `item`.
 
-**Before every commit:** run `make fmt` then `make test-fast`. Both must pass cleanly.
+**Before every commit:** run `make fmt` if any changed file would be affected by the formatter (Python, JS, CSS). Run `make test-fast` only when logic changed (Python views, models, forms, services, templates with non-trivial logic). Pure template or CSS changes that touch no logic do not require tests.
 
 ---
 
