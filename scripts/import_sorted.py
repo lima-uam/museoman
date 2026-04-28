@@ -56,7 +56,7 @@ def login(session, base, email, password):
 
 def _vitrina_pks(session, base):
     resp = session.get(f"{base}/catalog/vitrinas/")
-    return set(map(int, re.findall(r"<td>(\d+)</td>", resp.text)))
+    return set(map(int, re.findall(r"/catalog/vitrinas/(\d+)/editar/", resp.text)))
 
 
 def create_vitrina(session, base, nombre):
