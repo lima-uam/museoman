@@ -1,5 +1,5 @@
-<div id="item-header" class="flex items-center gap-2 mb-2"{% if oob %} hx-swap-oob="true"{% endif %}>
-  <h1 class="page-title" style="margin:0;flex:1">
+<div id="item-header" class="page-header"{% if oob %} hx-swap-oob="true"{% endif %}>
+  <h1 class="page-title">
     {{ item.nombre }}
     <span class="text-muted" style="font-weight:400;font-size:1rem"> #{{ item.pk }}</span>
   </h1>
@@ -7,7 +7,7 @@
   <a href="{% url 'items:update' item.pk %}" class="btn btn-sm btn-secondary">Editar</a>
   {% endif %}
   {% if user.is_staff %}
-  <form method="post" action="{% url 'items:deactivate' item.pk %}" style="display:inline">
+  <form method="post" action="{% url 'items:deactivate' item.pk %}" class="d-inline">
     {% csrf_token %}
     {% if item.activo %}
     <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Desactivar esta pieza?')">Desactivar</button>

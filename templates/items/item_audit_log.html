@@ -3,8 +3,8 @@
 {% block title %}Historial - {{ item.nombre }}{% endblock %}
 
 {% block content %}
-<div class="d-flex align-items-center gap-2 mb-2">
-  <h2 style="margin:0">Historial: {{ item.nombre }}</h2>
+<div class="page-header">
+  <h2 class="page-title">Historial: {{ item.nombre }}</h2>
   <a href="{% url 'items:detail' item.pk %}" class="btn btn-outline btn-sm">← Volver a la pieza</a>
 </div>
 
@@ -49,7 +49,7 @@
   </div>
   {% endif %}
   {% else %}
-  <p class="text-muted" style="margin:0;padding:1rem">Sin actividad registrada.</p>
+  <p class="text-muted m-0" style="padding:1rem">Sin actividad registrada.</p>
   {% endif %}
 </div>
 {% endblock %}

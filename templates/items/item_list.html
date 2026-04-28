@@ -3,8 +3,8 @@
 {% load static %}
 
 {% block content %}
-<div class="flex items-center gap-2 mb-2">
-  <h1 class="page-title" style="margin:0;flex:1">Piezas del museo</h1>
+<div class="page-header">
+  <h1 class="page-title">Piezas del museo</h1>
   {% if user.is_staff %}
   <a href="{% url 'items:create' %}" class="btn btn-primary btn-sm">+ Nueva pieza</a>
   {% endif %}
@@ -81,7 +81,7 @@
           {% endfor %}
         </select>
       </div>
-      <div class="form-group" style="align-self:flex-end">
+      <div class="form-group form-actions-end">
         <button type="submit" class="btn btn-secondary">Filtrar</button>
         <a href="{% url 'items:list' %}" class="btn btn-outline">Limpiar</a>
       </div>

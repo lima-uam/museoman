@@ -19,19 +19,19 @@
     <div class="stat-label">Total piezas activas</div>
   </div>
   <div class="stat-card">
-    <div class="stat-value" style="color:#495057">{{ state_counts.libre }}</div>
+    <div class="stat-value stat-value--libre">{{ state_counts.libre }}</div>
     <div class="stat-label">Libres</div>
   </div>
   <div class="stat-card">
-    <div class="stat-value" style="color:#084298">{{ state_counts.asignado }}</div>
+    <div class="stat-value stat-value--asignado">{{ state_counts.asignado }}</div>
     <div class="stat-label">Asignadas</div>
   </div>
   <div class="stat-card">
-    <div class="stat-value" style="color:#664d03">{{ state_counts.en_revision }}</div>
+    <div class="stat-value stat-value--en_revision">{{ state_counts.en_revision }}</div>
     <div class="stat-label">En revisión</div>
   </div>
   <div class="stat-card">
-    <div class="stat-value" style="color:#0a3622">{{ state_counts.documentado }}</div>
+    <div class="stat-value stat-value--documentado">{{ state_counts.documentado }}</div>
     <div class="stat-label">Documentadas</div>
   </div>
 </div>
@@ -42,7 +42,7 @@
   <div class="progress">
     <div class="progress-bar" style="width:{{ progress }}%">{{ progress }}%</div>
   </div>
-  <p class="text-muted mt-1" style="font-size:.82rem;margin-bottom:0">
+  <p class="text-muted mt-1 text-xs m-0">
     {{ state_counts.documentado }} de {{ total_items }} piezas documentadas
   </p>
 </div>

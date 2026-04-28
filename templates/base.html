@@ -46,14 +46,14 @@
   <div class="navbar-user">
     {% if user.is_authenticated %}
     {{ user.name }} &nbsp;·&nbsp;
-    <a href="{% url 'password_change' %}" style="color:var(--clr-muted);text-decoration:none">Cambiar contraseña</a>
+    <a href="{% url 'password_change' %}">Cambiar contraseña</a>
     &nbsp;·&nbsp;
-    <form method="post" action="{% url 'logout' %}" style="display:inline">
+    <form method="post" action="{% url 'logout' %}" class="d-inline">
       {% csrf_token %}
-      <button type="submit" style="background:none;border:none;color:var(--clr-danger);cursor:pointer;padding:0;font:inherit">Salir</button>
+      <button type="submit" class="btn-link">Salir</button>
     </form>
     {% else %}
-    <a href="{% url 'login' %}" class="btn btn-primary btn-sm" style="color:#fff">Iniciar sesión</a>
+    <a href="{% url 'login' %}" class="btn btn-primary btn-sm">Iniciar sesión</a>
     {% endif %}
   </div>
 </nav>

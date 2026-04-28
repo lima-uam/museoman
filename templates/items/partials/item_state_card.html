@@ -24,7 +24,7 @@
       </select>
     </div>
     {% endif %}
-    <button type="submit" class="btn btn-primary" style="width:100%">
+    <button type="submit" class="btn btn-primary btn-block">
       Asignar{% if not user.is_staff %} a mí{% endif %}
     </button>
   </form>
@@ -48,7 +48,7 @@
         </select>
       </div>
       {% endif %}
-      <button type="submit" class="btn btn-primary" style="width:100%">
+      <button type="submit" class="btn btn-primary btn-block">
         {% if item.estado == 'asignado' %}
           Enviar a revisión
         {% elif item.estado == 'en_revision' %}
@@ -67,7 +67,7 @@
           hx-swap="outerHTML">
       {% csrf_token %}
       <input type="hidden" name="target" value="{{ prev_state }}">
-      <button type="submit" class="btn btn-secondary" style="width:100%"
+      <button type="submit" class="btn btn-secondary btn-block"
               onclick="return confirm('¿Revertir el estado?')">
         {% if item.estado == 'asignado' %}
           ← Desasignar
@@ -83,7 +83,7 @@
     {% endif %}
   </div>
   {% else %}
-  <p class="text-muted text-center" style="font-size:.85rem;margin:0">
+  <p class="text-muted text-center text-sm m-0">
     No tienes permiso para cambiar el estado de esta pieza.
   </p>
   {% endif %}
