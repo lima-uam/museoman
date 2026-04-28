@@ -44,7 +44,11 @@ def login(session, base, email, password):
     session.get(f"{base}/login/")
     resp = session.post(
         f"{base}/login/",
-        data={"username": email, "password": password, "csrfmiddlewaretoken": _csrf(session)},
+        data={
+            "username": email,
+            "password": password,
+            "csrfmiddlewaretoken": _csrf(session),
+        },
         allow_redirects=False,
     )
     return resp.status_code == 302
@@ -78,7 +82,6 @@ def create_item(session, base, nombre, vitrina_pk, slot):
             "nombre": nombre,
             "vitrina": vitrina_pk,
             "vitrina_slot": slot,
-            "tipos": "",
             "url": "",
             "observaciones": "",
             "csrfmiddlewaretoken": _csrf(session),
@@ -104,14 +107,18 @@ def upload_photo(session, base, item_pk, img_path):
 
 def build_plan(root):
     items = []
-    counter = 0
+    counter = 1
     for vitrina_dir in sorted(p for p in root.iterdir() if p.is_dir()):
         slot_dirs = sorted(p for p in vitrina_dir.iterdir() if p.is_dir())
         for slot_dir in slot_dirs:
             slot = slot_dir.name.upper()
             if not re.fullmatch(r"[0-9A-F]", slot):
                 slot = ""
-            photos = sorted(f for f in slot_dir.iterdir() if f.is_file() and f.suffix.lower() in IMAGE_EXTENSIONS)
+            photos = sorted(
+                f
+                for f in slot_dir.iterdir()
+                if f.is_file() and f.suffix.lower() in IMAGE_EXTENSIONS
+            )
             items.append(
                 ItemPlan(
                     nombre=f"Sin clasificar {counter}",
@@ -126,7 +133,9 @@ def build_plan(root):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Import vitrinas and slotted items from a directory tree")
+    parser = argparse.ArgumentParser(
+        description="Import vitrinas and slotted items from a directory tree"
+    )
     parser.add_argument("path", help="Root directory: each subdir = one vitrina")
     parser.add_argument("--url", default="http://localhost:8000", metavar="URL")
     parser.add_argument("--email", required=True)
@@ -144,7 +153,9 @@ def main():
         sys.exit(1)
 
     vitrina_names = list(dict.fromkeys(item.vitrina_nombre for item in plan))
-    print(f"Plan: {len(vitrina_names)} vitrina(s), {len(plan)} item(s), {sum(len(i.photos) for i in plan)} photo(s).")
+    print(
+        f"Plan: {len(vitrina_names)} vitrina(s), {len(plan)} item(s), {sum(len(i.photos) for i in plan)} photo(s)."
+    )
 
     password = args.password or getpass.getpass(f"Password for {args.email}: ")
     base = args.url.rstrip("/")
@@ -191,7 +202,9 @@ def main():
             sys.exit(1)
         uploaded += 1
 
-    print(f"\nDone: {len(vitrina_names)} vitrinas, {len(plan)} items, {uploaded} photos.")
+    print(
+        f"\nDone: {len(vitrina_names)} vitrinas, {len(plan)} items, {uploaded} photos."
+    )
 
 
 if __name__ == "__main__":
