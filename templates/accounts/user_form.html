@@ -2,9 +2,10 @@
 {% block title %}{{ titulo }}{% endblock %}
 
 {% block content %}
+<div style="max-width:480px;margin:0 auto">
 <h1 class="page-title">{{ titulo }}</h1>
 
-<div class="card" style="max-width:480px">
+<div class="card">
   <form method="post">
     {% csrf_token %}
     {% for field in form %}
@@ -28,5 +29,6 @@
       <a href="{% url 'accounts:user_list' %}" class="btn btn-secondary">Cancelar</a>
     </div>
   </form>
+</div>
 </div>
 {% endblock %}
