@@ -2,19 +2,23 @@
 {% block title %}Iniciar sesión{% endblock %}
 
 {% block content %}
+<style>
+  .login-heading     { font-size: 1.3rem; margin: 0 0 1.25rem; text-align: center; }
+  .login-heading-sub { font-size: .8rem; font-weight: 400; color: var(--clr-muted); margin-top: .2rem; }
+  .login-error       { margin-bottom: .75rem; }
+  .login-footnote    { text-align: center; margin-top: 1.5rem; font-size: .8rem; color: var(--clr-muted); }
+</style>
 <div class="login-wrap">
   <div class="card">
-    <h1 style="font-size:1.3rem;margin:0 0 1.25rem;text-align:center">
+    <h1 class="login-heading">
       Museoman
-      <div style="font-size:.8rem;font-weight:400;color:#6c757d;margin-top:.2rem">
-        EPS UAM · LIMA
-      </div>
+      <div class="login-heading-sub">EPS UAM · LIMA</div>
     </h1>
 
     <form method="post">
       {% csrf_token %}
       {% if form.errors %}
-      <div class="message message-error" style="margin-bottom:.75rem">
+      <div class="message message-error login-error">
         Correo o contraseña incorrectos.
       </div>
       {% endif %}
@@ -27,15 +31,15 @@
         <label class="form-label" for="id_password">Contraseña</label>
         <input class="form-control" type="password" name="password" id="id_password" required>
       </div>
-      <button type="submit" class="btn btn-primary" style="width:100%">Entrar</button>
+      <button type="submit" class="btn btn-primary btn-block">Entrar</button>
     </form>
   </div>
 
-  <p style="text-align:center;margin-top:1.5rem;font-size:.8rem;color:#6c757d">
+  <p class="login-footnote">
     Sistema de gestión del museo EPS UAM<br>
     Laboratorio de Informática y Matemáticas (LIMA)
   </p>
-  <p style="text-align:center;font-size:.8rem;color:#6c757d">
+  <p class="login-footnote" style="margin-top:0">
     ¿Sin cuenta? Contacta con LIMA para solicitar acceso.<br>
     No existe registro público.
   </p>

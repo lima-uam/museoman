@@ -1,17 +1,24 @@
+<style>
+  .item-info-table { font-size: .9rem; }
+  .item-info-table th { background: none; }
+  .item-info-table th:first-child { width: 38%; }
+  .vitrina-slot-tag { font-size: .75rem; background: #6c757d; color: #fff; padding: .1rem .4rem; border-radius: .25rem; }
+  .item-obs { margin: 0; font-size: .9rem; white-space: pre-line; }
+</style>
 <div id="item-info" class="card"{% if oob %} hx-swap-oob="true"{% endif %}>
   <div class="card-header">Información</div>
-  <table style="font-size:.9rem">
-    <tr><th style="width:38%;background:none">Estado</th><td><span class="badge badge-{{ item.estado }}">{{ item.get_estado_display }}</span></td></tr>
-    <tr><th style="background:none">URL</th><td>{% if item.url %}<a href="{{ item.url }}" target="_blank" rel="noopener">{{ item.url }}</a>{% else %}<span class="text-muted">—</span>{% endif %}</td></tr>
-    <tr><th style="background:none">Tipos</th><td>{{ item.tipos.all|join:", "|default:"—" }}</td></tr>
-    <tr><th style="background:none">Vitrina</th><td>{{ item.vitrina|default:"—" }}{% if item.vitrina and item.vitrina_slot %} <span class="badge" style="font-size:.75rem;background:#6c757d;color:#fff;padding:.1rem .4rem;border-radius:.25rem">{{ item.vitrina_slot }}</span>{% endif %}</td></tr>
-    <tr><th style="background:none">Usuario asignado</th><td>{{ item.assigned_user.name|default:"—" }}</td></tr>
-    <tr><th style="background:none">Creado</th><td>{{ item.created_at|date:"d/m/Y H:i" }}</td></tr>
-    <tr><th style="background:none">Modificado</th><td>{{ item.updated_at|date:"d/m/Y H:i" }}</td></tr>
+  <table class="item-info-table">
+    <tr><th>Estado</th><td><span class="badge badge-{{ item.estado }}">{{ item.get_estado_display }}</span></td></tr>
+    <tr><th>URL</th><td>{% if item.url %}<a href="{{ item.url }}" target="_blank" rel="noopener">{{ item.url }}</a>{% else %}<span class="text-muted">—</span>{% endif %}</td></tr>
+    <tr><th>Tipos</th><td>{{ item.tipos.all|join:", "|default:"—" }}</td></tr>
+    <tr><th>Vitrina</th><td>{{ item.vitrina|default:"—" }}{% if item.vitrina and item.vitrina_slot %} <span class="vitrina-slot-tag">{{ item.vitrina_slot }}</span>{% endif %}</td></tr>
+    <tr><th>Usuario asignado</th><td>{{ item.assigned_user.name|default:"—" }}</td></tr>
+    <tr><th>Creado</th><td>{{ item.created_at|date:"d/m/Y H:i" }}</td></tr>
+    <tr><th>Modificado</th><td>{{ item.updated_at|date:"d/m/Y H:i" }}</td></tr>
   </table>
   {% if item.observaciones %}
   <hr class="separator">
   <div class="card-header">Observaciones</div>
-  <p style="margin:0;font-size:.9rem;white-space:pre-line">{{ item.observaciones }}</p>
+  <p class="item-obs">{{ item.observaciones }}</p>
   {% endif %}
 </div>

@@ -2,8 +2,11 @@
 {% block title %}Confirmar eliminación{% endblock %}
 
 {% block content %}
+<style>
+  .confirm-heading { font-size: 1.1rem; margin: 0 0 1rem; }
+</style>
 <div class="form-narrow" style="margin-top:3rem"><div class="card">
-  <h2 style="font-size:1.1rem;margin:0 0 1rem">¿Confirmar eliminación?</h2>
+  <h2 class="confirm-heading">¿Confirmar eliminación?</h2>
   <p>Esta acción no se puede deshacer.</p>
   <form method="post">
     {% csrf_token %}

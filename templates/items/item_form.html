@@ -2,6 +2,10 @@
 {% block title %}{{ titulo }}{% endblock %}
 
 {% block content %}
+<style>
+  .item-form-row { display: flex; gap: .75rem; align-items: flex-start; }
+  .item-form-row > :first-child { flex: 1; }
+</style>
 <div class="form-narrow--lg">
 <h1 class="page-title">{{ titulo }}</h1>
 <div class="card">
@@ -10,8 +14,8 @@
     {% for field in form %}
     {% if field.name == 'vitrina' %}
     <div class="form-group">
-      <div style="display:flex;gap:.75rem;align-items:flex-start">
-        <div style="flex:1">
+      <div class="item-form-row">
+        <div>
           <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
           {{ field }}
           {% if field.errors %}<div class="form-errors">{{ field.errors.as_text }}</div>{% endif %}

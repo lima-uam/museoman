@@ -2,13 +2,16 @@
 {% block title %}{{ item.nombre }}{% endblock %}
 
 {% block content %}
+<style>
+  .item-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+</style>
 {% include "items/partials/item_header.html" %}
 
 {% if not item.activo %}
 <div class="message message-warning">Esta pieza está inactiva.</div>
 {% endif %}
 
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+<div class="item-detail-grid">
 
   {% include "items/partials/item_info.html" %}
 

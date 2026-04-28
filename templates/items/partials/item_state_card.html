@@ -1,8 +1,13 @@
 {% load items_tags %}
+<style>
+  .state-display { text-align: center; padding: .5rem 0 1rem; }
+  .state-display .badge { font-size: 1rem; padding: .4rem 1rem; }
+  .state-actions { display: flex; flex-direction: column; gap: .5rem; }
+</style>
 <div class="card" id="state-card">
   <div class="card-header">Estado</div>
-  <div style="text-align:center;padding:.5rem 0 1rem">
-    <span class="badge badge-{{ item.estado }}" style="font-size:1rem;padding:.4rem 1rem">
+  <div class="state-display">
+    <span class="badge badge-{{ item.estado }}">
       {{ item.get_estado_display }}
     </span>
   </div>
@@ -30,7 +35,7 @@
   </form>
 
   {% elif can_advance or can_revert %}
-  <div style="display:flex;flex-direction:column;gap:.5rem">
+  <div class="state-actions">
     {% if can_advance %}
     <form method="post" action="{% url 'items:transition' item.pk %}"
           hx-post="{% url 'items:transition' item.pk %}"

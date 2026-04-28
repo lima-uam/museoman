@@ -3,6 +3,9 @@
 {% block title %}Historial - {{ item.nombre }}{% endblock %}
 
 {% block content %}
+<style>
+  .audit-pagination { padding: .6rem 1rem; border-top: 1px solid var(--clr-border); display: flex; align-items: center; gap: .5rem; }
+</style>
 <div class="page-header">
   <h2 class="page-title">Historial: {{ item.nombre }}</h2>
   <a href="{% url 'items:detail' item.pk %}" class="btn btn-outline btn-sm">← Volver a la pieza</a>
@@ -35,11 +38,11 @@
     </tbody>
   </table>
   {% if page_obj.has_other_pages %}
-  <div class="d-flex align-items-center gap-2" style="padding:.6rem 1rem;border-top:1px solid var(--clr-border)">
+  <div class="audit-pagination">
     {% if page_obj.has_previous %}
     <a href="?{% url_replace 'page' page_obj.previous_page_number %}" class="btn btn-sm btn-outline">Anterior</a>
     {% endif %}
-    <span class="text-muted" style="font-size:.85rem">
+    <span class="text-muted text-sm">
       Pagina {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
       ({{ page_obj.paginator.count }} entradas)
     </span>

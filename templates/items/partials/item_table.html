@@ -1,11 +1,16 @@
 {% load items_tags %}
+<style>
+  .col-thumb { width: 52px; }
+  .td-thumb  { padding: .4rem .5rem; }
+  .pagination-bar { margin-top: .75rem; display: flex; gap: .4rem; align-items: center; font-size: .85rem; }
+</style>
 <div class="card">
   {% if page_obj.object_list %}
   <div class="table-wrap">
     <table>
       <thead>
         <tr>
-          <th style="width:52px"></th>
+          <th class="col-thumb"></th>
           <th>Nombre</th>
           <th>Estado</th>
           <th>Tipo</th>
@@ -18,7 +23,7 @@
         {% for item in page_obj %}
         {% with photos=item.photos.all %}
         <tr>
-          <td style="padding:.4rem .5rem">
+          <td class="td-thumb">
             {% if photos %}
             {% with first=photos.0 %}
             <div class="item-thumb" data-photos="{% for p in photos %}{{ p.image.url }}{% if not forloop.last %}|{% endif %}{% endfor %}">
@@ -44,7 +49,7 @@
 
   <!-- Pagination -->
   {% if page_obj.has_other_pages %}
-  <div style="margin-top:.75rem;display:flex;gap:.4rem;align-items:center;font-size:.85rem">
+  <div class="pagination-bar">
     {% if page_obj.has_previous %}
     <a href="?{% url_replace 'page' page_obj.previous_page_number %}" class="btn btn-sm btn-outline">← Anterior</a>
     {% endif %}
