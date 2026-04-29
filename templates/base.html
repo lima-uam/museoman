@@ -37,7 +37,7 @@
             <div class="navbar-user">
                 {% if user.is_authenticated %}
                     {{ user.name }} &nbsp;·&nbsp;
-                    <a href="{% url 'password_change' %}">Cambiar contraseña</a>
+                    <a href="{% url 'password_change' %}" class="btn-muted">Cambiar contraseña</a>
                     &nbsp;·&nbsp;
                     <form method="post" action="{% url 'logout' %}" class="d-inline">
                         {% csrf_token %}

@@ -74,8 +74,7 @@ body {
     background: #e8f0fe;
 }
 
-.navbar-user,
-.navbar-user a {
+.navbar-user {
     margin-left: auto;
     color: var(--clr-muted);
     font-size: .875rem;
@@ -143,6 +142,10 @@ body {
 
 .btn-danger:hover {
     opacity: .85;
+}
+
+.btn-muted {
+    color: var(--clr-muted);
 }
 
 .btn-success {
